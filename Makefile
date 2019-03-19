@@ -1,5 +1,6 @@
 CXX=g++
-CXX_FLAGS=-Iinclude/avs
+CXX_FLAGS=-Iinclude/avs -I/opt/vc/include
+LD_FLAGS=-L/opt/vc/lib -lbrcmGLESv2 -lbrcmEGL -lbcm_host
 MKDIR_P=mkdir -p
 RM_R=rm -r
 
@@ -9,7 +10,7 @@ OBJ_DIR=$(BIN_DIR)/obj
 
 SRC=$(wildcard $(SRC_DIR)/*.cpp)
 OBJ=$(patsubst $(SRC_DIR)/%.cpp,$(OBJ_DIR)/%.o,$(SRC))
-OUT=$(BIN_DIR)/libavs.a
+OUT=$(BIN_DIR)/libavs.so
 
 all: $(OUT)
 
@@ -17,10 +18,10 @@ $(OBJ_DIR):
 	$(MKDIR_P) $@
 
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp | $(OBJ_DIR)
-	$(CXX) -c -o $@ $< $(CXX_FLAGS)
+	$(CXX) -fPIC -c -o $@ $< $(CXX_FLAGS) $(LD_FLAGS)
 
 $(OUT): $(OBJ)
-	ar -rcs $@ $^
+	$(CXX) -shared -Wl,-soname,$@ -o $@ $^ $(CXX_FLAGS) $(LD_FLAGS)
 
 .PHONY: clean
 clean:
