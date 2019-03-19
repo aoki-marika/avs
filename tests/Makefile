@@ -8,17 +8,16 @@ RM_R=rm -r
 SRC_DIR=src
 BIN_DIR=bin
 
-SRC=$(wildcard $(SRC_DIR)/*.c)
-OUT=$(patsubst $(SRC_DIR)/%.c,$(BIN_DIR)/%,$(SRC))
+OUT=$(patsubst $(SRC_DIR)/%.c,$(BIN_DIR)/%,$(wildcard $(SRC_DIR)/*.c))
 
 all: $(OUT)
 
 $(BIN_DIR):
 	$(MKDIR_P) $@
-
-$(OUT): $(SRC) | $(BIN_DIR)
 	make -C ../
-	$(CP) ../bin/libavs.so bin/
+	$(CP) ../bin/libavs.so $(BIN_DIR)/
+
+bin/%: src/%.c | $(BIN_DIR)
 	$(CXX) -o $@ $^ $(CXX_FLAGS) $(LD_FLAGS)
 
 .PHONY: clean
