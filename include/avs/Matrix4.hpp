@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Vector3.hpp"
+
 struct Matrix4
 {
     float Values[4][4];
@@ -27,6 +29,23 @@ struct Matrix4
         return Matrix4(1, 0, 0, 0,
                        0, 1, 0, 0,
                        0, 0, 1, 0,
+                       0, 0, 0, 1);
+    }
+
+    static Matrix4 Translation(Vector3 offset)
+    {
+        return Matrix4(1, 0, 0, offset.X,
+                       0, 1, 0, offset.Y,
+                       0, 0, 1, offset.Z,
+                       0, 0, 0, 1);
+    }
+
+    static Matrix4 Scaling(Vector3 scale)
+    {
+        float x = scale.X, y = scale.Y, z = scale.Z;
+        return Matrix4(x, 0, 0, 0,
+                       0, y, 0, 0,
+                       0, 0, z, 0,
                        0, 0, 0, 1);
     }
 
