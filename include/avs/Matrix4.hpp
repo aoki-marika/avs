@@ -34,9 +34,10 @@ struct Matrix4
 
     static Matrix4 Translation(Vector3 offset)
     {
-        return Matrix4(1, 0, 0, offset.X,
-                       0, 1, 0, offset.Y,
-                       0, 0, 1, offset.Z,
+        float x = offset.X, y = offset.Y, z = offset.Z;
+        return Matrix4(1, 0, 0, x,
+                       0, 1, 0, y,
+                       0, 0, 1, z,
                        0, 0, 0, 1);
     }
 
@@ -61,7 +62,7 @@ struct Matrix4
                 float sum = 0;
 
                 for(int i = 0; i < 4; i++)
-                    sum += Values[i][y] * other.Values[x][i];
+                    sum += this->Values[i][y] * other.Values[x][i];
 
                 result.Values[x][y] = sum;
             }
