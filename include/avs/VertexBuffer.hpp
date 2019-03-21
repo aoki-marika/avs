@@ -89,4 +89,7 @@ class VertexBuffer
             buffer->SetVertices(0, vertices);
             return buffer;
         }
+
+        // bind this vertex buffer to GL_ARRAY_BUFFER for usage
+        void Bind();
 };

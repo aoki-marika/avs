@@ -35,6 +35,11 @@ int VertexBuffer::verticesSize(int n)
 
 void VertexBuffer::setVertices(int start_index, int size, float *values)
 {
-    glBindBuffer(GL_ARRAY_BUFFER, id);
+    Bind();
     glBufferSubData(GL_ARRAY_BUFFER, verticesSize(start_index), verticesSize(size), values);
+}
+
+void VertexBuffer::Bind()
+{
+    glBindBuffer(GL_ARRAY_BUFFER, id);
 }
