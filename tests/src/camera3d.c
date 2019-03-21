@@ -23,7 +23,7 @@ int main()
                       0.000000f, 2.414213f, 0.000000f, 0.000000f,
                       0.000000f, 0.000000f, 1.002002f, 39.879879f,
                       0.000000f, 0.000000f, 1.000000f, 40.000000f);
-    assert_matrix_equals("pv matrix 1280x720 from 0,0,-40 to 0,0,0", camera->GetMatrix(), correct);
+    assert_matrix4_equals("pv matrix 1280x720 from 0,0,-40 to 0,0,0", camera->GetMatrix(), correct);
 
     // 10,-5,30 to 2,7,3
     camera->SetPosition(Vector3(10, -5, 30));
@@ -32,7 +32,7 @@ int main()
                        0.268869f,  2.220969f,  0.907432f, -18.806816f,
                       -0.261872f,  0.392808f, -0.883817f,  30.897078f,
                       -0.261349f,  0.392023f, -0.882052f,  31.035147f);
-    assert_matrix_equals("pv matrix 1280x720 from 10,-5,30 to 2,7,3", camera->GetMatrix(), correct);
+    assert_matrix4_equals("pv matrix 1280x720 from 10,-5,30 to 2,7,3", camera->GetMatrix(), correct);
     delete camera;
 
     // 720x1280 position and target
@@ -49,7 +49,7 @@ int main()
                       -0.408248f,  0.816497f, -0.408248f,   0.000000f,
                        0.705650f,  0.705650f,  0.705650f,  82.455811f,
                        0.577350f,  0.577350f,  0.577350f,  69.282028f);
-    assert_matrix_equals("pv matrix 720x1280 from -20,-40,-60 to 60,40,20", camera->GetMatrix(), correct);
+    assert_matrix4_equals("pv matrix 720x1280 from -20,-40,-60 to 60,40,20", camera->GetMatrix(), correct);
 
     // 20,40,60 to -60,-40,-20
     camera->SetPosition(Vector3(20, 40, 60));
@@ -58,7 +58,7 @@ int main()
                       -0.408248f,  0.816497f, -0.408248f,   0.000000f,
                       -0.705650f, -0.705650f, -0.705650f,  82.455811f,
                       -0.577350f, -0.577350f, -0.577350f,  69.282028f);
-    assert_matrix_equals("pv matrix 720x1280 from 20,40,60 to -60,-40,-20", camera->GetMatrix(), correct);
+    assert_matrix4_equals("pv matrix 720x1280 from 20,40,60 to -60,-40,-20", camera->GetMatrix(), correct);
     delete camera;
 
     return EXIT_SUCCESS;

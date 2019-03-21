@@ -13,7 +13,7 @@ int main()
                       0, 1, 0, 5,
                       0, 0, 1, 5,
                       0, 0, 0, 1);
-    assert_matrix_equals("translation 5,5,5", matrix, correct);
+    assert_matrix4_equals("translation 5,5,5", matrix, correct);
 
     // scale by 2,2,2
     scaling = Matrix4::Scaling(Vector3(2, 2, 2));
@@ -22,7 +22,7 @@ int main()
                       0, 2, 0, 5,
                       0, 0, 2, 5,
                       0, 0, 0, 1);
-    assert_matrix_equals("scaling 2,2,2", matrix, correct);
+    assert_matrix4_equals("scaling 2,2,2", matrix, correct);
 
     // translate by -2,1,-3
     translation = Matrix4::Scaling(Vector3(-2, 1, -3));
@@ -31,7 +31,7 @@ int main()
                        0,  2,  0,  5,
                        0,  0, -6,  5,
                        0,  0,  0,  1);
-    assert_matrix_equals("translation -2,1,-3", matrix, correct);
+    assert_matrix4_equals("translation -2,1,-3", matrix, correct);
 
     // scale by -10 -5 20
     scaling = Matrix4::Scaling(Vector3(-10, -5, 20));
@@ -40,7 +40,7 @@ int main()
                          0,  -10,    0,    5,
                          0,    0, -120,    5,
                          0,    0,    0,    1);
-    assert_matrix_equals("scaling -10,-5,20", matrix, correct);
+    assert_matrix4_equals("scaling -10,-5,20", matrix, correct);
 
     return EXIT_SUCCESS;
 }

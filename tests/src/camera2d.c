@@ -14,7 +14,7 @@ int main()
                        0.000000f, -0.002778f,  0.000000f,  1.000000f,
                        0.000000f,  0.000000f, -2.000000f,  1.000000f,
                        0.000000f,  0.000000f,  0.000000f,  1.000000f);
-    assert_matrix_equals("pv matrix 1280x720", camera->GetMatrix(), correct);
+    assert_matrix4_equals("pv matrix 1280x720", camera->GetMatrix(), correct);
     delete camera;
 
     // pv matrix 720x1280
@@ -23,7 +23,7 @@ int main()
                        0.000000f, -0.001563f,  0.000000f,  1.000000f,
                        0.000000f,  0.000000f, -2.000000f,  1.000000f,
                        0.000000f,  0.000000f,  0.000000f,  1.000000);
-    assert_matrix_equals("pv matrix 720x1280", camera->GetMatrix(), correct);
+    assert_matrix4_equals("pv matrix 720x1280", camera->GetMatrix(), correct);
     delete camera;
 
     return EXIT_SUCCESS;
