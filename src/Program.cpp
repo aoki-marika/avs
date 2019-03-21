@@ -35,3 +35,35 @@ Program::~Program()
 {
     glDeleteProgram(id);
 }
+
+unsigned int Program::GetUniform(std::string name)
+{
+    return glGetUniformLocation(id, name.c_str());
+}
+
+unsigned int Program::GetAttribute(std::string name)
+{
+    return glGetAttribLocation(id, name.c_str());
+}
+
+void Program::Use()
+{
+    glUseProgram(id);
+}
+
+void Program::UniformVector3(unsigned int uniform, Vector3 value)
+{
+    GLfloat values[] =
+    {
+        value.X,
+        value.Y,
+        value.Z,
+    };
+
+    glUniform3fv(uniform, 1, values);
+}
+
+void Program::UniformMatrix4(unsigned int uniform, Matrix4 value)
+{
+    glUniformMatrix4fv(uniform, 1, GL_FALSE, &value.Values[0][0]);
+}
