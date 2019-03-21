@@ -9,7 +9,7 @@ Camera2D::Camera2D(float width, float height)
     // -x = left, x = right, -y = down, y = up
     float l = -width / 2, r = width / 2;
     float b = height / 2, t = -height / 2;
-    float n = 0, f = 1;
+    float n = 1, f = 0;
     float tx = -(r + l) / (r - l);
     float ty = -(t + b) / (t - b);
     float tz = -(f + n) / (f - n);
