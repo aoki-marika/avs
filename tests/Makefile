@@ -1,6 +1,6 @@
 CXX=g++
-CXX_FLAGS=-I../include -I/opt/vc/include
-LD_FLAGS=-Lbin -lavs -Wl,-rpath,"\$ORIGIN" -L/opt/vc/lib -lbrcmGLESv2
+CXX_FLAGS=-Iinclude/tests -I../include
+LD_FLAGS=-Lbin -lavs -Wl,-rpath,"\$ORIGIN"
 MKDIR_P=mkdir -p
 CP=cp
 RM_R=rm -r
