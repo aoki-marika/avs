@@ -6,12 +6,8 @@ int main()
     // render a 720x1280 window for 100 frames
     Window *window = new Window(720, 1280);
 
-    int i = 0;
-    while (i < 100)
-    {
+    for (int i = 0; i < 100; i++)
         window->SwapBuffers();
-        i++;
-    }
 
     delete window;
     return EXIT_SUCCESS;
