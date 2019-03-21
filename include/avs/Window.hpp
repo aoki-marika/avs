@@ -22,5 +22,11 @@ class Window
         Window(int width, int height);
         ~Window();
 
+        // clear the current frame buffer for this window
+        // should be called at the start of each frame
+        void ClearBuffers();
+
+        // swap frame buffers for this window
+        // should be called at the end of each frame
         void SwapBuffers();
 };

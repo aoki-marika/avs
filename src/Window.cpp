@@ -131,6 +131,11 @@ Window::~Window()
     bcm_host_deinit();
 }
 
+void Window::ClearBuffers()
+{
+    glClear(GL_COLOR_BUFFER_BIT);
+}
+
 void Window::SwapBuffers()
 {
     eglSwapBuffers(display, surface);
