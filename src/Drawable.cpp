@@ -1,0 +1,71 @@
+#include "Drawable.hpp"
+#include "ShaderSource.hpp"
+
+#include <GLES2/gl2.h>
+
+Drawable::Drawable(std::string fragment_source)
+{
+    // drawables use a quad with position and size 1,1,1 then multiply by their actual position/size when drawing
+    // this allows the vertex buffer to never have to be modified, which is a tedious task
+    vertex_buffer = VertexBuffer::Quad(Vector3(1, 1, 1),
+                                       Vector3(1, 2, 1),
+                                       Vector3(2, 2, 1),
+                                       Vector3(2, 1, 1));
+
+    // create the shaders and program
+    Shader *vertex = new Shader(ShaderType::Vertex, ShaderSource::DRAWABLE_VERTEX);
+    Shader *fragment = new Shader(ShaderType::Fragment, fragment_source);
+    program = new Program(vertex, fragment);
+
+    // delete the fragment and vertex as theyre now compiled and linked
+    delete fragment;
+    delete vertex;
+
+    // get attribute and uniform locations
+    attrib_vertex_position = program->GetAttribute("vertexPosition");
+    uniform_pv = program->GetUniform("pv");
+    uniform_size = program->GetUniform("size");
+    uniform_position = program->GetUniform("position");
+    uniform_alpha = program->GetUniform("alpha");
+
+    // apply defaults
+    SetAlpha(1);
+}
+
+Drawable::~Drawable()
+{
+    delete program;
+    delete vertex_buffer;
+}
+
+void Drawable::SetSize(Vector3 size)
+{
+    program->Use();
+    program->UniformVector3(uniform_size, size);
+}
+
+void Drawable::SetPosition(Vector3 position)
+{
+    program->Use();
+    program->UniformVector3(uniform_position, position);
+}
+
+void Drawable::SetAlpha(float alpha)
+{
+    program->Use();
+    program->UniformFloat(uniform_alpha, alpha);
+}
+
+void Drawable::Draw(Camera *camera)
+{
+    // set the pv matrix
+    program->Use();
+    program->UniformMatrix4(uniform_pv, camera->GetMatrix());
+
+    // draw the quad from the vertex buffer
+    glEnableVertexAttribArray(attrib_vertex_position);
+    vertex_buffer->Bind();
+    glVertexAttribPointer(attrib_vertex_position, vertex_buffer->GetVertexSize(), GL_FLOAT, GL_FALSE, 0, NULL);
+    glDrawArrays(GL_TRIANGLES, 0, vertex_buffer->GetMaxVertices());
+    glDisableVertexAttribArray(attrib_vertex_position);
+}
