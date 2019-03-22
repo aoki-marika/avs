@@ -2,6 +2,7 @@
 
 #include "Shader.hpp"
 #include "Matrix4.hpp"
+#include "Colour4.hpp"
 
 class Program
 {
@@ -22,5 +23,6 @@ class Program
         // set uniform values to various data types
         // Use must be called before uniforms can be set
         void UniformVector3(unsigned int uniform, Vector3 value);
+        void UniformColour4(unsigned int uniform, Colour4 value);
         void UniformMatrix4(unsigned int uniform, Matrix4 value);
 };

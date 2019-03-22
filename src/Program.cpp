@@ -63,6 +63,19 @@ void Program::UniformVector3(unsigned int uniform, Vector3 value)
     glUniform3fv(uniform, 1, values);
 }
 
+void Program::UniformColour4(unsigned int uniform, Colour4 value)
+{
+    GLfloat values[] =
+    {
+        value.R,
+        value.G,
+        value.B,
+        value.A,
+    };
+
+    glUniform4fv(uniform, 1, values);
+}
+
 void Program::UniformMatrix4(unsigned int uniform, Matrix4 value)
 {
     glUniformMatrix4fv(uniform, 1, GL_FALSE, &value.Values[0][0]);
