@@ -90,6 +90,18 @@ class VertexBuffer
             return buffer;
         }
 
+        // get the size in values of a vertex in this buffer
+        int GetVertexSize()
+        {
+            return vertex_values;
+        }
+
+        // get the maximum number of vertices this buffer is allocated to hold
+        int GetMaxVertices()
+        {
+            return max_vertices;
+        }
+
         // bind this vertex buffer to GL_ARRAY_BUFFER for usage
         void Bind();
 };
