@@ -5,6 +5,7 @@
 #include "Vector3.hpp"
 #include "VertexBuffer.hpp"
 
+// used as a base class, use Box for a functional implementation
 class Drawable
 {
     private:
