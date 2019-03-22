@@ -16,6 +16,7 @@ int main()
     box->SetSize(Vector3(1, 2, 1));
     box->SetPosition(Vector3(-0.5f, -1, 0));
     box->SetAlpha(0.5);
+    box->SetBlendMode(BlendMode::Additive);
     box->SetColour(Colour4(1, 0, 1, 0.5));
 
     // draw the box for 100 frames

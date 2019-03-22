@@ -30,6 +30,7 @@ Drawable::Drawable(std::string fragment_source)
 
     // apply defaults
     SetAlpha(1);
+    SetBlendMode(BlendMode::Normal);
 }
 
 Drawable::~Drawable()
@@ -56,8 +57,27 @@ void Drawable::SetAlpha(float alpha)
     program->UniformFloat(uniform_alpha, alpha);
 }
 
+void Drawable::SetBlendMode(BlendMode mode)
+{
+    this->blend_mode = mode;
+}
+
 void Drawable::Draw(Camera *camera)
 {
+    // apply blend mode
+    switch (blend_mode)
+    {
+        case BlendMode::Normal:
+            glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+            break;
+        case BlendMode::Additive:
+            glBlendFunc(GL_SRC_ALPHA, GL_ONE);
+            break;
+        case BlendMode::Multiply:
+            glBlendFunc(GL_SRC_ALPHA, GL_SRC_COLOR);
+            break;
+    }
+
     // set the pv matrix
     program->Use();
     program->UniformMatrix4(uniform_pv, camera->GetMatrix());

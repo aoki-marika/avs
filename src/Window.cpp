@@ -108,6 +108,10 @@ Window::Window(int width, int height)
     // connect the context to the surface
     result = eglMakeCurrent(display, surface, surface, context);
     assert(result != EGL_FALSE);
+
+    // setup gles
+    glEnable(GL_BLEND);
+    glClearColor(0, 0, 0, 1);
 }
 
 Window::~Window()
