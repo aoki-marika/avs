@@ -51,6 +51,11 @@ void Program::Use()
     glUseProgram(id);
 }
 
+void Program::UniformFloat(unsigned int uniform, float value)
+{
+    glUniform1f(uniform, value);
+}
+
 void Program::UniformVector3(unsigned int uniform, Vector3 value)
 {
     GLfloat values[] =

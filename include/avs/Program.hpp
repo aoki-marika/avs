@@ -22,6 +22,7 @@ class Program
 
         // set uniform values to various data types
         // Use must be called before uniforms can be set
+        void UniformFloat(unsigned int uniform, float value);
         void UniformVector3(unsigned int uniform, Vector3 value);
         void UniformColour4(unsigned int uniform, Colour4 value);
         void UniformMatrix4(unsigned int uniform, Matrix4 value);
