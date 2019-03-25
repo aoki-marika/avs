@@ -31,5 +31,6 @@ class ByteBuffer
         // read various data types and increment the reading offset
         uint8_t ReadU8();
         uint16_t ReadU16();
+        int32_t ReadS32();
         uint32_t ReadU32();
 };

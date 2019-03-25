@@ -39,6 +39,19 @@ uint16_t ByteBuffer::ReadU16()
     return value;
 }
 
+int32_t ByteBuffer::ReadS32()
+{
+    checkEnd(offset);
+
+    uint32_t value = buffer[offset + 0] << 24 |
+                     buffer[offset + 1] << 16 |
+                     buffer[offset + 2] << 8 |
+                     buffer[offset + 3] << 0;
+
+    offset += 4;
+    return value;
+}
+
 uint32_t ByteBuffer::ReadU32()
 {
     checkEnd(offset);
