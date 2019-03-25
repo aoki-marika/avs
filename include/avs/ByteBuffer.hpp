@@ -1,6 +1,7 @@
 #pragma once
 
 #include <stdint.h>
+#include <limits.h>
 
 class ByteBuffer
 {
@@ -9,10 +10,23 @@ class ByteBuffer
         const unsigned char *buffer;
 
         // the current offset this buffer is reading from
-        unsigned int offset = 0;
+        unsigned int offset;
+
+        // the end offset of the data of this buffer
+        unsigned int end_offset = UINT_MAX;
+
+        // check if the given offset is beyond end_offset, and if it is then it throws an exception
+        void checkEnd(unsigned int new_offset);
 
     public:
-        ByteBuffer(const unsigned char *buffer);
+        ByteBuffer(const unsigned char *buffer, unsigned int start_offset = 0);
+
+        // set the end offset of the data of this buffer
+        // defaults to no end
+        void SetEnd(unsigned int end_offset);
+
+        // returns whether or not this buffer has read all of its data
+        bool AtEnd();
 
         // read various data types and increment the reading offset
         uint8_t ReadU8();
