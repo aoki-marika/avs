@@ -75,6 +75,12 @@ uint32_t ByteBuffer::ReadU32()
     return value;
 }
 
+void ByteBuffer::RealignReads(unsigned int size)
+{
+    while (offset % size)
+        offset++;
+}
+
 void ByteBuffer::checkEnd(unsigned int new_offset)
 {
     if (new_offset >= end_offset)

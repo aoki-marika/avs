@@ -49,4 +49,7 @@ class ByteBuffer
         uint16_t ReadU16();
         int32_t ReadS32();
         uint32_t ReadU32();
+
+        // realign the reading position to a grid of the given size in bytes
+        void RealignReads(unsigned int size = 4);
 };
