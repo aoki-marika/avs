@@ -40,6 +40,10 @@ class ByteBuffer
         // returns whether or not this buffer has read all of its data
         bool AtEnd();
 
+        // read num_bytes bytes from this buffer into out, and increment the reading offset
+        // out should be num_bytes in size
+        void ReadBytes(unsigned int num_bytes, unsigned char *out);
+
         // read various data types and increment the reading offset
         uint8_t ReadU8();
         uint16_t ReadU16();

@@ -18,6 +18,16 @@ bool ByteBuffer::AtEnd()
     return offset >= end_offset - 1;
 }
 
+void ByteBuffer::ReadBytes(unsigned int num_bytes, unsigned char *out)
+{
+    checkEnd(offset);
+
+    for (int i = 0; i < num_bytes; i++)
+        out[i] = buffer[offset + i];
+
+    offset += num_bytes;
+}
+
 uint8_t ByteBuffer::ReadU8()
 {
     checkEnd(offset);
