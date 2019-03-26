@@ -21,6 +21,18 @@ class ByteBuffer
     public:
         ByteBuffer(const unsigned char *buffer, unsigned int start_offset = 0);
 
+        // get the current reading offset of this buffer
+        unsigned int GetOffset()
+        {
+            return offset;
+        }
+
+        // set the current reading offset of this buffer
+        void SetOffset(unsigned int new_offset)
+        {
+            offset = new_offset;
+        }
+
         // set the end offset of the data of this buffer
         // defaults to no end
         void SetEnd(unsigned int end_offset);
