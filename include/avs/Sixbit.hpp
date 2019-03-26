@@ -2,6 +2,7 @@
 
 #include <stdint.h>
 #include <string>
+#include <bitset>
 
 #include "ByteBuffer.hpp"
 
@@ -100,16 +101,23 @@ class Sixbit
             source_buffer->ReadBytes(length_bytes, bytes);
 
             // convert the bytes to a big endian unsigned int
-            unsigned int bits = 0;
+            // note: if strings start showing leading zeroes then this value needs to be increased
+            // it works as of now but its only being tested with one testing file
+            std::bitset<256> bits;
             for (int i = 0; i < length_bytes; i++)
-                bits = (bits << 8) | bytes[i];
+            {
+                // bits = (bits << 8) | bytes[i]
+                bits = (bits << 8) | std::bitset<bits.size()>(bytes[i]);
+            }
             bits >>= padding;
 
             // get the characters for bits
             char result[length + 1];
             for (int i = length - 1; i >= 0; i--)
             {
-                result[i] = characterForId(bits & 0b111111);
+                // bits & 0b111111
+                unsigned int id = (bits & std::bitset<bits.size()>("111111")).to_ulong();
+                result[i] = characterForId(id);
                 bits >>= 6;
             }
             result[length] = '\0';
