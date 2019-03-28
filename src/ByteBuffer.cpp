@@ -2,6 +2,8 @@
 
 #include <stdexcept>
 
+#include "Utilities.hpp"
+
 ByteBuffer::ByteBuffer(const unsigned char *buffer, unsigned int start_offset)
 {
     this->buffer = buffer;
@@ -31,47 +33,32 @@ void ByteBuffer::ReadBytes(unsigned int num_bytes, unsigned char *out)
 uint8_t ByteBuffer::ReadU8()
 {
     checkEnd(offset);
-
-    uint8_t value = buffer[offset];
-
-    offset += 1;
+    uint8_t value = Utilities::BytesToU8(buffer, offset);
+    offset += sizeof(uint8_t);
     return value;
 }
 
 uint16_t ByteBuffer::ReadU16()
 {
     checkEnd(offset);
-
-    uint16_t value = buffer[offset + 0] << 8 |
-                     buffer[offset + 1] << 0;
-
-    offset += 2;
+    uint16_t value = Utilities::BytesToU16(buffer, offset);
+    offset += sizeof(uint16_t);
     return value;
 }
 
 int32_t ByteBuffer::ReadS32()
 {
     checkEnd(offset);
-
-    uint32_t value = buffer[offset + 0] << 24 |
-                     buffer[offset + 1] << 16 |
-                     buffer[offset + 2] << 8 |
-                     buffer[offset + 3] << 0;
-
-    offset += 4;
+    int32_t value = Utilities::BytesToS32(buffer, offset);
+    offset += sizeof(int32_t);
     return value;
 }
 
 uint32_t ByteBuffer::ReadU32()
 {
     checkEnd(offset);
-
-    uint32_t value = buffer[offset + 0] << 24 |
-                     buffer[offset + 1] << 16 |
-                     buffer[offset + 2] << 8 |
-                     buffer[offset + 3] << 0;
-
-    offset += 4;
+    uint32_t value = Utilities::BytesToU32(buffer, offset);
+    offset += sizeof(uint32_t);
     return value;
 }
 
