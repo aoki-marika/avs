@@ -32,6 +32,11 @@ namespace Assert
             Failure(name, &value, &expected);
     }
 
+    static void FloatEquals(std::string name, float value, float expected)
+    {
+        if (fabs(value - expected) > EPSILON)
+            Failure(name, &value, &expected);
+    }
 
     static void Vector3Equals(std::string name, Vector3 value, Vector3 expected)
     {
