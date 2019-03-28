@@ -133,40 +133,40 @@ int main()
     std::vector<Node *> entry_nodes = root->GetNodes("entry");
 
     // number of entry nodes
-    Assert::Equals("<entry> count", entry_nodes.size(), (size_t)68);
+    Assert::Equals("<entry> node count", entry_nodes.size(), (size_t)68);
 
     // ip4 array
     Assert::NodeArrayEquals("ip4 array", entry_nodes[0], std::array<unsigned char, 8>({ 0x7f, 0x00, 0x00, 0x01, 0xc0, 0xa8, 0x00, 0x01 }));
 
     // attributes and text
     NodeString hello_world = (NodeString)entry_nodes[1];
-    Assert::NodeAttributeEquals("attribute 1", hello_world, "attr", "test");
-    Assert::NodeAttributeEquals("attribute 2", hello_world, "attr2", "best");
-    Assert::NodeValueEquals("string value", hello_world, std::string("Hello, world!"));
+    Assert::NodeAttributeEquals("Attribute 1", hello_world, "attr", "test");
+    Assert::NodeAttributeEquals("Attribute 2", hello_world, "attr2", "best");
+    Assert::NodeValueEquals("String value", hello_world, std::string("Hello, world!"));
 
     // text encoding
     NodeString encoding = (NodeString)root->GetNode("superstar");
-    Assert::NodeAttributeEquals("attribute encoding", encoding, "babe", "ミツル");
-    Assert::NodeValueEquals("value encoding", encoding, std::string("シ　イス　マイ　ワイフ"));
+    Assert::NodeAttributeEquals("Attribute encoding", encoding, "babe", "ミツル");
+    Assert::NodeValueEquals("Value encoding", encoding, std::string("シ　イス　マイ　ワイフ"));
 
     // 6bit conversion
     Assert::NodeArrayEquals("6bit conversion", root->GetNode("xXx_T4GG3R_xXx"), std::array<uint8_t, 3>({ 8, 9, 10 }));
 
     // alignment
-    Assert::NodeValueEquals("alignment", root->GetNode("aligned"), (uint8_t)12);
+    Assert::NodeValueEquals("Alignment", root->GetNode("aligned"), (uint8_t)12);
 
     // binary
-    Assert::NodeArrayEquals("binary 1", entry_nodes[2], std::array<unsigned char, 4>({ 0xde, 0xad, 0xbe, 0xef }));
-    Assert::NodeArrayEquals("binary 2", entry_nodes[3], std::array<unsigned char, 4>({ 0xde, 0xad, 0xbe, 0x7a }));
+    Assert::NodeArrayEquals("Binary 1", entry_nodes[2], std::array<unsigned char, 4>({ 0xde, 0xad, 0xbe, 0xef }));
+    Assert::NodeArrayEquals("Binary 2", entry_nodes[3], std::array<unsigned char, 4>({ 0xde, 0xad, 0xbe, 0x7a }));
 
     // 2d array
-    Assert::NodeArrayEquals("2d array", entry_nodes[4], std::array<uint8_t, 6>({ 1, 2, 3, 1, 2, 3 }));
+    Assert::NodeArrayEquals("2D array", entry_nodes[4], std::array<uint8_t, 6>({ 1, 2, 3, 1, 2, 3 }));
 
     // node with no value
-    Assert::Equals("node with no value", root->GetNode("no_friends") != nullptr, true);
+    Assert::Equals("Node with no value", root->GetNode("no_friends") != nullptr, true);
 
     // node with attribute but no value
-    Assert::NodeAttributeEquals("node with attribute but no value", root->GetNode("food_for_thought"), "bread", "tasty");
+    Assert::NodeAttributeEquals("Node with attribute but no value", root->GetNode("food_for_thought"), "bread", "tasty");
 
     // all data types
     // 1x values
