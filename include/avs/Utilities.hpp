@@ -76,9 +76,9 @@ namespace Utilities
         return value;
     }
 
-    static float BytesToBoolean(const unsigned char *bytes, int offset)
+    static bool BytesToBool(const unsigned char *bytes, int offset)
     {
-        if (BytesToU8(bytes, offset))
+        if (bytes[offset] == 0x01)
             return true;
         else
             return false;

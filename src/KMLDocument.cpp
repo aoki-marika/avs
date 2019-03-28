@@ -421,7 +421,7 @@ KML::Node *KML::Document::createNode(UConverter *converter,
         case KML::NodeFormat::String:  return new KML::NodeValue<std::string>(name, decodeString(converter, bytes, num_bytes));
         case KML::NodeFormat::Float:   return KML::Node::FromBytes(name, bytes, num_items, item_size, Utilities::BytesToFloat);
         case KML::NodeFormat::Double:  return KML::Node::FromBytes(name, bytes, num_items, item_size, Utilities::BytesToDouble);
-        case KML::NodeFormat::Bool:    return KML::Node::FromBytes(name, bytes, num_items, item_size, Utilities::BytesToBoolean);
+        case KML::NodeFormat::Bool:    return KML::Node::FromBytes(name, bytes, num_items, item_size, Utilities::BytesToBool);
 
         // default to an array of the given bytes
         default:
