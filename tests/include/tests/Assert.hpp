@@ -6,6 +6,7 @@
 #include <sstream>
 #include <iostream>
 #include <avs/KMLNode.hpp>
+#include <avs/Vector3.hpp>
 #include <avs/Matrix4.hpp>
 
 namespace Assert
@@ -31,6 +32,24 @@ namespace Assert
             Failure(name, &value, &expected);
     }
 
+
+    static void Vector3Equals(std::string name, Vector3 value, Vector3 expected)
+    {
+        if (fabs(value.X - expected.X) > EPSILON ||
+            fabs(value.Y - expected.Y) > EPSILON ||
+            fabs(value.Z - expected.Z) > EPSILON)
+        {
+            std::ostringstream value_stream, expected_stream;
+            value_stream << std::fixed;
+            expected_stream << std::fixed;
+
+            value_stream << "(" << value.X << ", " << value.Y << ", " << value.Z << ")";
+            expected_stream << "(" << expected.X << ", " << expected.Y << ", " << expected.Z << ")";
+
+            std::string value_string = value_stream.str(), expected_string = expected_stream.str();
+            Failure(name, &value_string, &expected_string);
+        }
+    }
 
     static void Matrix4Equals(std::string name, Matrix4 value, Matrix4 expected)
     {
