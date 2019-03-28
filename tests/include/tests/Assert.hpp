@@ -1,13 +1,18 @@
 #pragma once
 
 #include <stdlib.h>
+#include <math.h>
 #include <array>
 #include <sstream>
 #include <iostream>
 #include <avs/KMLNode.hpp>
+#include <avs/Matrix4.hpp>
 
 namespace Assert
 {
+    // the epsilon for float equals asserts
+    static const float EPSILON = 0.001;
+
     template <class T>
     static void Failure(std::string name, T *value, T *expected)
     {
@@ -24,6 +29,52 @@ namespace Assert
     {
         if (value != expected)
             Failure(name, &value, &expected);
+    }
+
+
+    static void Matrix4Equals(std::string name, Matrix4 value, Matrix4 expected)
+    {
+        bool failure = false;
+
+        for (int x = 0; x < 4; x++)
+        {
+            for (int y = 0; y < 4; y++)
+            {
+                if (fabs(value.Values[x][y] - expected.Values[x][y]) > EPSILON)
+                {
+                    failure = true;
+                    break;
+                }
+            }
+        }
+
+        if (failure)
+        {
+            std::ostringstream value_stream, expected_stream;
+            value_stream << std::fixed;
+            expected_stream << std::fixed;
+
+            for (int y = 0; y < 4; y++)
+            {
+                for (int x = 0; x < 4; x++)
+                {
+                    value_stream << value.Values[x][y];
+                    expected_stream  << expected.Values[x][y];
+
+                    if (x < 3)
+                    {
+                        value_stream << ", ";
+                        expected_stream << ", ";
+                    }
+                }
+
+                value_stream << std::endl << "    ";
+                expected_stream << std::endl << "    ";
+            }
+
+            std::string value_string = value_stream.str(), expected_string = expected_stream.str();
+            Failure(name, &value_string, &expected_string);
+        }
     }
 
     static void NodeAttributeEquals(std::string name, KML::Node *node, std::string attribute_name, std::string expected)
