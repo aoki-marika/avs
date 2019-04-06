@@ -104,11 +104,35 @@ namespace KML
             Node *GetNode(std::string name);
             std::vector<Node *> GetNodes(std::string name);
 
+            // get the tag name of this node
+            std::string GetName()
+            {
+                return name;
+            }
+
             // get the parent node of this node
             // returns nullptr if this node does not have a parent
             Node *GetParent()
             {
                 return parent;
+            }
+
+            // get a copy of the vector of pointers to this nodes child nodes
+            std::vector<Node *> GetChildren()
+            {
+                return children;
+            }
+
+            // get the number of child nodes this node has
+            unsigned int GetChildrenCount()
+            {
+                return children.size();
+            }
+
+            // get a pointer to the child node of this node at the given index
+            Node *GetChild(unsigned int index)
+            {
+                return children[index];
             }
     };
 
