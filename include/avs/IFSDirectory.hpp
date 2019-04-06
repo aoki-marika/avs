@@ -17,8 +17,7 @@ namespace IFS
             std::string stringReplaceAll(std::string string, std::string match, std::string replacement);
 
         public:
-            // create a directory filesystem entry from the given kml node with the given name
-            // data_buffer is the ByteBuffer that is passed to child files to read data from
+            // data_buffer is the buffer that is passed to child files to read data from
             Directory(KML::Node *node,
                       ByteBuffer *data_buffer,
                       std::string name);

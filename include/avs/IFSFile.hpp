@@ -15,8 +15,7 @@ namespace IFS
             int32_t data_offset, data_size;
 
         public:
-            // create a file filesystem entry from the given kml node with the given name
-            // data_buffer is the ByteBuffer for this file to read data from
+            // data_buffer is the buffer for this file to read data from
             File(KML::Node *node,
                  ByteBuffer *data_buffer,
                  std::string name);
