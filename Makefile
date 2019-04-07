@@ -1,6 +1,16 @@
 CXX=g++
-CXX_FLAGS=-Iinclude/avs -Ibin -I/opt/vc/include -Wno-psabi
-LD_FLAGS=-lGLESv2 -licuuc -lX11 -lEGL
+CXX_FLAGS=-Iinclude/avs -Ibin -Wno-psabi
+LD_FLAGS=-licuuc
+
+# link against platform specific libraries for rpi
+# check for rpi by checking for a bcm2708 cpu
+ifeq ($(grep -m 1 -o BCM2708 /proc/cpuinfo), BCM2708)
+    CXX_FLAGS:=-I/opt/vc/include $(CXX_FLAGS)
+    LD_FLAGS:=-L/opt/vc/lib -lbrcmGLESv2 -lbrcmEGL -lbcm_host $(LD_FLAGS)
+else
+    LD_FLAGS:=-lGLESv2 -lX11 -lEGL $(LD_FLAGS)
+endif
+
 MKDIR=mkdir
 RM_R=rm -r
 SHD_INC=utils/shader_header.sh
