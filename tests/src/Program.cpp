@@ -6,7 +6,7 @@
 int main()
 {
     // need a window to get a gles context
-    Window *window = new Window(1, 1);
+    Window *window = new Window("Context", 1, 1);
 
     std::string vertex_source = R"VERTEX(
 void main()
