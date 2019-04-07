@@ -1,25 +1,36 @@
 #pragma once
 
-#include <stdint.h>
+#include <string>
 
-typedef void *EGLDisplay;
-typedef void *EGLSurface;
-typedef void *EGLContext;
-typedef uint32_t DISPMANX_DISPLAY_HANDLE_T;
-typedef uint32_t DISPMANX_ELEMENT_HANDLE_T;
+namespace Linux
+{
+    struct _XDisplay;
+    typedef _XDisplay Display;
+
+    typedef unsigned long CARD32;
+    typedef CARD32 XID;
+    typedef XID Window;
+
+    typedef void *EGLDisplay;
+    typedef void *EGLSurface;
+    typedef void *EGLContext;
+};
 
 class Window
 {
     private:
-        EGLDisplay display;
-        EGLSurface surface;
-        EGLContext context;
+        Linux::EGLDisplay egl_display;
+        Linux::EGLSurface egl_surface;
+        Linux::EGLContext egl_context;
 
-        DISPMANX_DISPLAY_HANDLE_T dispman_display;
-        DISPMANX_ELEMENT_HANDLE_T dispman_element;
+        Linux::Display *x_display;
+        Linux::Window x_window;
+
+        void setupWindow(std::string title, int width, int height);
+        void setupContext();
 
     public:
-        Window(int width, int height);
+        Window(std::string title, int width, int height);
         ~Window();
 
         // clear the current frame buffer for this window
