@@ -1,43 +1,20 @@
 #pragma once
 
-#include <string>
+#include "WindowBase.hpp"
 
-namespace Linux
+// an empty class for platform specific functionality
+class Window : public WindowBase
 {
-    struct _XDisplay;
-    typedef _XDisplay Display;
+    protected:
+        // internal struct for implementation specific data
+        void *Data;
 
-    typedef unsigned long CARD32;
-    typedef CARD32 XID;
-    typedef XID Window;
-
-    typedef void *EGLDisplay;
-    typedef void *EGLSurface;
-    typedef void *EGLContext;
-};
-
-class Window
-{
-    private:
-        Linux::EGLDisplay egl_display;
-        Linux::EGLSurface egl_surface;
-        Linux::EGLContext egl_context;
-
-        Linux::Display *x_display;
-        Linux::Window x_window;
-
-        void setupWindow(std::string title, int width, int height);
-        void setupContext();
+        virtual void *GetDisplay();
+        virtual void *GetWindow();
 
     public:
-        Window(std::string title, int width, int height);
+        Window(std::string title,
+               unsigned int width,
+               unsigned int height);
         ~Window();
-
-        // clear the current frame buffer for this window
-        // should be called at the start of each frame
-        void ClearBuffers();
-
-        // swap frame buffers for this window
-        // should be called at the end of each frame
-        void SwapBuffers();
 };
