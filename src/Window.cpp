@@ -1,33 +1,20 @@
-#include "WindowBase.hpp"
+#include "Window.hpp"
 
 #include <assert.h>
 #include <GLES2/gl2.h>
 #include <EGL/egl.h>
 
-WindowBase::WindowBase(std::string title,
-                       unsigned int width,
-                       unsigned int height)
-{
-}
-
-WindowBase::~WindowBase()
-{
-    eglDestroySurface(egl_display, egl_surface);
-    eglDestroyContext(egl_display, egl_context);
-    eglTerminate(egl_display);
-}
-
-void WindowBase::ClearBuffers()
+void Window::ClearBuffers()
 {
     glClear(GL_COLOR_BUFFER_BIT);
 }
 
-void WindowBase::SwapBuffers()
+void Window::SwapBuffers()
 {
     eglSwapBuffers(egl_display, egl_surface);
 }
 
-void WindowBase::CreateContext()
+void Window::CreateContext()
 {
     // egl and context attributes
     static const EGLint attributes[] =
@@ -84,4 +71,11 @@ void WindowBase::CreateContext()
     // setup gles
     glEnable(GL_BLEND);
     glClearColor(0, 0, 0, 1);
+}
+
+void Window::DeleteContext()
+{
+    eglDestroySurface(egl_display, egl_surface);
+    eglDestroyContext(egl_display, egl_context);
+    eglTerminate(egl_display);
 }

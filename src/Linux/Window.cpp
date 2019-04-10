@@ -19,7 +19,7 @@ typedef struct
 
 Window::Window(std::string title,
                unsigned int width,
-               unsigned int height) : WindowBase::WindowBase(title, width, height)
+               unsigned int height)
 {
     using namespace X11;
 
@@ -91,10 +91,14 @@ Window::Window(std::string title,
 
 Window::~Window()
 {
+    // tear down x11
     WindowData *data = (WindowData *)Data;
     XDestroyWindow(data->Display, data->Window);
     XCloseDisplay(data->Display);
     delete data;
+
+    // delete the context
+    DeleteContext();
 }
 
 void *Window::GetDisplay()

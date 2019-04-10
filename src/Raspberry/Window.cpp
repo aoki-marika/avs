@@ -15,7 +15,7 @@ typedef struct
 
 Window::Window(std::string title,
                unsigned int width,
-               unsigned int height) : WindowBase::WindowBase(title, width, height)
+               unsigned int height)
 {
     // create the data struct
     Data = new WindowData();
@@ -86,6 +86,7 @@ Window::Window(std::string title,
 
 Window::~Window()
 {
+    // tear down dispmanx
     WindowData *data = (WindowData *)Data;
     DISPMANX_UPDATE_HANDLE_T dispman_update = vc_dispmanx_update_start(10);
     assert(dispman_update != DISPMANX_NO_HANDLE);
@@ -101,6 +102,9 @@ Window::~Window()
     bcm_host_deinit();
     delete data->Window;
     delete data;
+
+    // delete the context
+    DeleteContext();
 }
 
 void *Window::GetDisplay()
