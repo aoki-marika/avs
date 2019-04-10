@@ -5,12 +5,25 @@ MKDIR=mkdir
 RM_R=rm -r
 SHD_INC=utils/shader_header.sh
 
+# platform name constants
+PLATFORM_RASPBERRY=Raspberry
+PLATFORM_LINUX=Linux
+
 # get the platform name
-# check for an rpi by checking for a bcm2708 cpu
-ifeq ($(grep -m 1 -o BCM2708 /proc/cpuinfo),BCM2708)
-	PLATFORM=Raspberry
+# check for an rpi by checking for one of the broadcam cpus that rpis use
+BCM_CPU=$(shell grep -m 1 -o -P "(?<=BCM)\d{4}" /proc/cpuinfo)
+ifneq ($(filter $(BCM_CPU),2835 2837B0 2835 2836 2837 2837B0 2835 2837 2837B0 2835),)
+	PLATFORM=$(PLATFORM_RASPBERRY)
 else
-	PLATFORM=Linux
+	PLATFORM=$(PLATFORM_LINUX)
+endif
+
+# handle platform specific functionality
+ifeq ($(PLATFORM),$(PLATFORM_RASPBERRY))
+	CXX_FLAGS:=-I/opt/vc/include $(CXX_FLAGS)
+	LD_FLAGS:=-L/opt/vc/lib -lbrcmGLESv2 -lbrcmEGL -lbcm_host $(LD_FLAGS)
+else ifeq ($(PLATFORM),$(PLATFORM_LINUX))
+	LD_FLAGS:=-lGLESv2 -lX11 -lEGL $(LD_FLAGS)
 endif
 
 SRC_DIR=src
@@ -19,15 +32,6 @@ OBJ_DIR=$(BIN_DIR)/obj
 SHD_DIR=shaders
 
 SRC=$(wildcard $(SRC_DIR)/*.cpp) $(wildcard $(SRC_DIR)/$(PLATFORM)/*.cpp)
-
-# handle platform specific functionality
-ifeq ($(PLATFORM),Raspberry)
-	CXX_FLAGS:=-I/opt/vc/include $(CXX_FLAGS)
-	LD_FLAGS:=-L/opt/vc/lib -lbrcmGLESv2 -lbrcmEGL -lbcm_host $(LD_FLAGS)
-else ifeq ($(PLATFORM),Linux)
-	LD_FLAGS:=-lGLESv2 -lX11 -lEGL $(LD_FLAGS)
-endif
-
 OBJ=$(patsubst $(SRC_DIR)/%.cpp,$(OBJ_DIR)/%.o,$(SRC))
 SHD=$(wildcard $(SHD_DIR)/*.vert $(SHD_DIR)/*.frag)
 SHD_OUT=$(BIN_DIR)/ShaderSource.hpp
