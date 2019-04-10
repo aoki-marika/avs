@@ -1,5 +1,6 @@
 #pragma once
 
+#include <string>
 #include <stdint.h>
 #include <limits.h>
 
@@ -21,7 +22,13 @@ class ByteBuffer
         void checkEnd(unsigned int new_offset);
 
     public:
+        // create a buffer from the given byte array
         ByteBuffer(const unsigned char *buffer, unsigned int start_offset = 0);
+
+        // create a buffer from the file at the given path
+        ByteBuffer(std::string path, unsigned int start_offset = 0);
+
+        ~ByteBuffer();
 
         // get the current reading offset of this buffer
         unsigned int GetOffset()

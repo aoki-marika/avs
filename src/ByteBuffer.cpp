@@ -4,11 +4,23 @@
 
 #include "Utilities.hpp"
 #include "ByteReader.hpp"
+#include "FileReader.hpp"
 
 ByteBuffer::ByteBuffer(const unsigned char *buffer, unsigned int start_offset)
 {
     this->reader = new ByteReader(buffer);
     this->offset = start_offset;
+}
+
+ByteBuffer::ByteBuffer(std::string path, unsigned int start_offset)
+{
+    this->reader = new FileReader(path);
+    this->offset = start_offset;
+}
+
+ByteBuffer::~ByteBuffer()
+{
+    delete reader;
 }
 
 void ByteBuffer::SetEnd(unsigned int end_offset)
