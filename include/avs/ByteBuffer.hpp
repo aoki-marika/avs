@@ -3,11 +3,13 @@
 #include <stdint.h>
 #include <limits.h>
 
+#include "Reader.hpp"
+
 class ByteBuffer
 {
     private:
-        // the buffer this buffer is reading from
-        const unsigned char *buffer;
+        // the reader this buffer is reading from
+        Reader *reader;
 
         // the current offset this buffer is reading from
         unsigned int offset;
