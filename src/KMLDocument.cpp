@@ -4,7 +4,7 @@
 #include <unicode/ucnv.h>
 
 #include "Sixbit.hpp"
-#include "Utilities.hpp"
+#include "ByteUtilities.hpp"
 
 KML::Document::Document(const unsigned char *source)
 {
@@ -409,19 +409,19 @@ KML::Node *KML::Document::createNode(UConverter *converter,
 
     switch (formatRemoveValues(format))
     {
-        case KML::NodeFormat::S8:      return KML::Node::FromBytes(name, bytes, num_items, item_size, Utilities::BytesToS8);
-        case KML::NodeFormat::U8:      return KML::Node::FromBytes(name, bytes, num_items, item_size, Utilities::BytesToU8);
-        case KML::NodeFormat::S16:     return KML::Node::FromBytes(name, bytes, num_items, item_size, Utilities::BytesToS16);
-        case KML::NodeFormat::U16:     return KML::Node::FromBytes(name, bytes, num_items, item_size, Utilities::BytesToU16);
-        case KML::NodeFormat::S32:     return KML::Node::FromBytes(name, bytes, num_items, item_size, Utilities::BytesToS32);
+        case KML::NodeFormat::S8:      return KML::Node::FromBytes(name, bytes, num_items, item_size, ByteUtilities::BytesToS8);
+        case KML::NodeFormat::U8:      return KML::Node::FromBytes(name, bytes, num_items, item_size, ByteUtilities::BytesToU8);
+        case KML::NodeFormat::S16:     return KML::Node::FromBytes(name, bytes, num_items, item_size, ByteUtilities::BytesToS16);
+        case KML::NodeFormat::U16:     return KML::Node::FromBytes(name, bytes, num_items, item_size, ByteUtilities::BytesToU16);
+        case KML::NodeFormat::S32:     return KML::Node::FromBytes(name, bytes, num_items, item_size, ByteUtilities::BytesToS32);
         case KML::NodeFormat::Timestamp: //timestamps are u32s
-        case KML::NodeFormat::U32:     return KML::Node::FromBytes(name, bytes, num_items, item_size, Utilities::BytesToU32);
-        case KML::NodeFormat::S64:     return KML::Node::FromBytes(name, bytes, num_items, item_size, Utilities::BytesToS64);
-        case KML::NodeFormat::U64:     return KML::Node::FromBytes(name, bytes, num_items, item_size, Utilities::BytesToU64);
+        case KML::NodeFormat::U32:     return KML::Node::FromBytes(name, bytes, num_items, item_size, ByteUtilities::BytesToU32);
+        case KML::NodeFormat::S64:     return KML::Node::FromBytes(name, bytes, num_items, item_size, ByteUtilities::BytesToS64);
+        case KML::NodeFormat::U64:     return KML::Node::FromBytes(name, bytes, num_items, item_size, ByteUtilities::BytesToU64);
         case KML::NodeFormat::String:  return new KML::NodeValue<std::string>(name, decodeString(converter, bytes, num_bytes));
-        case KML::NodeFormat::Float:   return KML::Node::FromBytes(name, bytes, num_items, item_size, Utilities::BytesToFloat);
-        case KML::NodeFormat::Double:  return KML::Node::FromBytes(name, bytes, num_items, item_size, Utilities::BytesToDouble);
-        case KML::NodeFormat::Bool:    return KML::Node::FromBytes(name, bytes, num_items, item_size, Utilities::BytesToBool);
+        case KML::NodeFormat::Float:   return KML::Node::FromBytes(name, bytes, num_items, item_size, ByteUtilities::BytesToFloat);
+        case KML::NodeFormat::Double:  return KML::Node::FromBytes(name, bytes, num_items, item_size, ByteUtilities::BytesToDouble);
+        case KML::NodeFormat::Bool:    return KML::Node::FromBytes(name, bytes, num_items, item_size, ByteUtilities::BytesToBool);
 
         // default to an array of the given bytes
         default:

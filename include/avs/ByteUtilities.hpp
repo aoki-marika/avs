@@ -4,7 +4,7 @@
 #include <stdint.h>
 #include <math.h>
 
-namespace Utilities
+namespace ByteUtilities
 {
     // note: all of these functions are designed for big endian in konamis binary file formats
     // dont rely on them to work properly in other cases
