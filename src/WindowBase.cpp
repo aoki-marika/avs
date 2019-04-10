@@ -12,6 +12,9 @@ WindowBase::WindowBase(std::string title,
 
 WindowBase::~WindowBase()
 {
+    eglDestroySurface(egl_display, egl_surface);
+    eglDestroyContext(egl_display, egl_context);
+    eglTerminate(egl_display);
 }
 
 void WindowBase::ClearBuffers()
