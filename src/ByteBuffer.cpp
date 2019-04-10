@@ -2,9 +2,9 @@
 
 #include <stdexcept>
 
-#include "Utilities.hpp"
 #include "ByteReader.hpp"
 #include "FileReader.hpp"
+#include "ByteUtilities.hpp"
 
 ByteBuffer::ByteBuffer(const unsigned char *buffer, unsigned int start_offset)
 {
@@ -48,7 +48,7 @@ uint8_t ByteBuffer::ReadU8()
     reader->ReadBytes(offset, sizeof(uint8_t), bytes);
     offset += sizeof(uint8_t);
 
-    return Utilities::BytesToU8(bytes, 0);
+    return ByteUtilities::BytesToU8(bytes, 0);
 }
 
 uint16_t ByteBuffer::ReadU16()
@@ -59,7 +59,7 @@ uint16_t ByteBuffer::ReadU16()
     reader->ReadBytes(offset, sizeof(uint16_t), bytes);
     offset += sizeof(uint16_t);
 
-    return Utilities::BytesToU16(bytes, 0);
+    return ByteUtilities::BytesToU16(bytes, 0);
 }
 
 int32_t ByteBuffer::ReadS32()
@@ -70,7 +70,7 @@ int32_t ByteBuffer::ReadS32()
     reader->ReadBytes(offset, sizeof(int32_t), bytes);
     offset += sizeof(int32_t);
 
-    return Utilities::BytesToS32(bytes, 0);
+    return ByteUtilities::BytesToS32(bytes, 0);
 }
 
 uint32_t ByteBuffer::ReadU32()
@@ -81,7 +81,7 @@ uint32_t ByteBuffer::ReadU32()
     reader->ReadBytes(offset, sizeof(uint32_t), bytes);
     offset += sizeof(uint32_t);
 
-    return Utilities::BytesToU32(bytes, 0);
+    return ByteUtilities::BytesToU32(bytes, 0);
 }
 
 void ByteBuffer::RealignReads(unsigned int size)
