@@ -1,13 +1,16 @@
 #pragma once
 
+#include <string>
 #include <stdint.h>
 #include <limits.h>
+
+#include "Reader.hpp"
 
 class ByteBuffer
 {
     private:
-        // the buffer this buffer is reading from
-        const unsigned char *buffer;
+        // the reader this buffer is reading from
+        Reader *reader;
 
         // the current offset this buffer is reading from
         unsigned int offset;
@@ -19,7 +22,13 @@ class ByteBuffer
         void checkEnd(unsigned int new_offset);
 
     public:
+        // create a buffer from the given byte array
         ByteBuffer(const unsigned char *buffer, unsigned int start_offset = 0);
+
+        // create a buffer from the file at the given path
+        ByteBuffer(std::string path, unsigned int start_offset = 0);
+
+        ~ByteBuffer();
 
         // get the current reading offset of this buffer
         unsigned int GetOffset()
