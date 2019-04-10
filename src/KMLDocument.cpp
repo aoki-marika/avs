@@ -312,7 +312,7 @@ size_t KML::Document::formatSize(KML::NodeFormat format)
         case KML::NodeFormat::Binary:      return sizeof(unsigned char);
         case KML::NodeFormat::String:      return sizeof(char);
         case KML::NodeFormat::IPv4:        return sizeof(uint8_t);
-        case KML::NodeFormat::Timestamp:   return sizeof(uint32_t); //todo: correct?
+        case KML::NodeFormat::Timestamp:   return sizeof(uint32_t);
         case KML::NodeFormat::Float:       return sizeof(float);
         case KML::NodeFormat::Double:      return sizeof(double);
         case KML::NodeFormat::Bool:        return sizeof(signed char);

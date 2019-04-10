@@ -4,10 +4,10 @@
 #include "KMLDocument.hpp"
 #include "IFSDirectory.hpp"
 
-IFS::Document::Document(const unsigned char *source)
+IFS::Document::Document(std::string path)
 {
     // create the buffer for reading the header
-    ByteBuffer *header_buffer = new ByteBuffer(source);
+    ByteBuffer *header_buffer = new ByteBuffer(path);
 
     // ensure the given source matches the ifs signature
     if (header_buffer->ReadU32() != signature)
@@ -38,7 +38,7 @@ IFS::Document::Document(const unsigned char *source)
     KML::Document *manifest = new KML::Document(manifest_source);
 
     // create the data buffer
-    data_buffer = new ByteBuffer(source, 0, manifest_end_offset);
+    data_buffer = new ByteBuffer(path, 0, manifest_end_offset);
 
     // load the root directory
     // pass the actual root node, <imgfs>

@@ -1,5 +1,6 @@
 #pragma once
 
+#include <string>
 #include <stdint.h>
 
 #include "IFSDirectory.hpp"
@@ -20,9 +21,8 @@ namespace IFS
             ByteBuffer *data_buffer;
 
         public:
-            // todo: use a FILE or similar so only loaded files are in memory
-            // the current plan is to add support for reading from a FILE to ByteBuffer, and pass a file path here
-            Document(const unsigned char *source);
+            // create an ifs document from the file at the given path
+            Document(std::string path);
             ~Document();
     };
 };
