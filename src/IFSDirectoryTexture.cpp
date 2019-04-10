@@ -5,7 +5,7 @@
 
 IFS::DirectoryTexture::DirectoryTexture(KML::Node *node,
                                         ByteBuffer *data_buffer,
-                                        std::string name) : IFS::DirectoryMD5(node, data_buffer, name, "texturelist.xml", "image", "png")
+                                        std::string name) : IFS::DirectoryMD5(node, data_buffer, name, "texturelist.xml", "texture", "image", "png")
 {
     // get the texture list source
     IFS::File *texture_list_file = (IFS::File *)this->GetEntry("texturelist.xml");

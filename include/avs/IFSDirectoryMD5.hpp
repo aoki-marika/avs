@@ -13,6 +13,7 @@ namespace IFS
                          ByteBuffer *data_buffer,
                          std::string name,
                          std::string mapping_file_name, //the name of the mapping kml file in this directory
+                         std::string mapping_directory_nodes_name, //the tag name of directory nodes in the mapping kml
                          std::string mapping_nodes_name, //the tag name of mapping nodes in the mapping kml
                          std::string extension = ""); //the extension to append to the plain text filenames, if any
     };
