@@ -1,25 +1,43 @@
 #pragma once
 
-#include <stdint.h>
+#include <string>
 
 typedef void *EGLDisplay;
 typedef void *EGLSurface;
 typedef void *EGLContext;
-typedef uint32_t DISPMANX_DISPLAY_HANDLE_T;
-typedef uint32_t DISPMANX_ELEMENT_HANDLE_T;
 
+// partially implemented for cross platform and platform specific
 class Window
 {
     private:
-        EGLDisplay display;
-        EGLSurface surface;
-        EGLContext context;
+        EGLDisplay egl_display;
+        EGLSurface egl_surface;
+        EGLContext egl_context;
 
-        DISPMANX_DISPLAY_HANDLE_T dispman_display;
-        DISPMANX_ELEMENT_HANDLE_T dispman_element;
+    protected:
+        // internal struct for implementation specific data
+        void *Data;
+
+        // get the egl display/window for this window
+        // implemented per platform
+        void *GetDisplay();
+        void *GetWindow();
+
+        // create the egl context for this window
+        // should be called after window creation in implementation ctors
+        void CreateContext();
+
+        // tear down the egl context for this window
+        // should be called in implementation dtors
+        void DeleteContext();
 
     public:
-        Window(int width, int height);
+        // create a new window with the given title, width, and height
+        // then create and setup an egl context for it
+        // implemented per platform
+        Window(std::string title,
+               unsigned int width,
+               unsigned int height);
         ~Window();
 
         // clear the current frame buffer for this window

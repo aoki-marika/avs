@@ -21,9 +21,14 @@ for path in $(ls $shaders_path/*.vert $shaders_path/*.frag); do
     name=$(echo "$name" | sed -E 's/.FRAG/_FRAGMENT/g')
 
     # append the shader to the header
+    # rpi autodefines float precision, but it still needs to be defined on other platforms
     header=$(cat <<-SOURCE
 $header
     static const std::string $name = R"SOURCE(
+#ifdef GL_ES
+precision mediump float;
+#endif
+
 $contents
 )SOURCE";
 
