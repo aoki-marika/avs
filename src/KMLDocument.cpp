@@ -1,7 +1,6 @@
 #include "KMLDocument.hpp"
 
 #include <stdexcept>
-#include <unicode/ucnv.h>
 
 #include "Sixbit.hpp"
 #include "ByteUtilities.hpp"
@@ -11,38 +10,42 @@ KML::Document::Document(const unsigned char *source)
     // create the buffer for reading the header and nodes
     ByteBuffer *node_buffer = new ByteBuffer(source);
 
-    // ensure the given buffer matches the kml signature
+    // ensure the given source matches the kml signature
     if (node_buffer->ReadU8() != signature)
         throw new std::runtime_error("Given source is not of a KML file (invalid signature)");
 
-    // read the compression and encoding bytes
+    // read the compression
     KML::Compression compression = KML::Compression(node_buffer->ReadU8());
-    KML::Encoding encoding = KML::Encoding(node_buffer->ReadU8());
 
-    // the next byte should always be equal to NOT encoding
-    if (!(node_buffer->ReadU8() == 0xFF ^ encoding))
-        throw std::runtime_error("Given source is not of a valid KML file (NOT encoding incorrect)");
-
-    // get the unicode converter for the documents encoding
-    std::string encoding_name;
-    switch (encoding)
+    // read the encoding
+    uint8_t encoding_key = node_buffer->ReadU8();
+    StringEncoding encoding;
+    switch (encoding_key)
     {
-        case KML::Encoding::ASCII:      encoding_name = "ASCII";      break;
-        case KML::Encoding::ISO_8859_1: encoding_name = "ISO-8859-1"; break;
-        case KML::Encoding::EUC_JP:     encoding_name = "EUC-JP";     break;
-        case KML::Encoding::CP932:      encoding_name = "cp932";      break;
-        case KML::Encoding::UTF8:       encoding_name = "UTF-8";      break;
+        case 0x00:
+        case 0x80:
+            encoding = StringEncoding::CP932;
+            break;
+        case 0x20:
+            encoding = StringEncoding::ASCII;
+            break;
+        case 0x40:
+            encoding = StringEncoding::ISO_8859_1;
+            break;
+        case 0x60:
+            encoding = StringEncoding::EUC_JP;
+            break;
+        case 0xa0:
+            encoding = StringEncoding::UTF8;
+            break;
     }
 
-    UErrorCode error = U_ZERO_ERROR;
-    UConverter *converter = ucnv_open(encoding_name.c_str(), &error);
-    if (U_FAILURE(error))
-    {
-        const char *format = "Unable to create decoding converter for encoding \"%s\" (%i)";
-        char message[strlen(format) + encoding_name.length()];
-        sprintf(message, format, encoding_name.c_str(), error);
-        throw new std::runtime_error(message);
-    }
+    // the next byte should always be equal to NOT(encoding key)
+    if (node_buffer->ReadU8() != (0xff ^ encoding_key))
+        throw std::runtime_error("Given source is not of a valid KML file (NOT(encoding key) incorrect)");
+
+    // get the string converter for the documents encoding
+    StringConverter *converter = new StringConverter(encoding);
 
     // read and set the end offset of the node data
     uint32_t node_end_offset = node_buffer->ReadU32() + 8;
@@ -90,10 +93,10 @@ KML::Document::Document(const unsigned char *source)
                     name = Sixbit::Unpack(node_buffer);
                     break;
                 case KML::Compression::Uncompressed:
-                    uint8_t length = node_buffer->ReadU8();
-                    unsigned char bytes[length];
-                    node_buffer->ReadBytes(length, bytes);
-                    name = decodeString(converter, bytes, length);
+                    uint8_t num_bytes = node_buffer->ReadU8();
+                    unsigned char bytes[num_bytes];
+                    node_buffer->ReadBytes(num_bytes, bytes);
+                    name = converter->Decode(bytes, num_bytes);
                     break;
             }
         }
@@ -170,7 +173,7 @@ KML::Document::Document(const unsigned char *source)
     }
 
     // delete the converter
-    ucnv_close(converter);
+    delete converter;
 
     // delete the buffers
     delete word_buffer;
@@ -319,42 +322,16 @@ size_t KML::Document::formatSize(KML::NodeFormat format)
     }
 }
 
-std::string KML::Document::decodeString(UConverter *converter, unsigned char *bytes, uint8_t length)
-{
-    // convert the bytes into unicode
-    const char *characters = (char *)bytes;
-    const uint8_t unicode_bytes = length * 2;
-    UChar unicode[unicode_bytes];
-    UErrorCode error = U_ZERO_ERROR;
-    ucnv_toUChars(converter, unicode, unicode_bytes, characters, length, &error);
-
-    if (U_FAILURE(error))
-    {
-        const char *format = "Unable to convert bytes to Unicode (%i)";
-        char message[strlen(format)];
-        sprintf(message, format, error);
-        throw new std::runtime_error(message);
-    }
-
-    // convert the unicode characters into a string
-    UnicodeString unicode_string = UnicodeString(unicode);
-    std::string string;
-    unicode_string.toUTF8String(string);
-
-    // return the string
-    return string;
-}
-
-std::string KML::Document::grabString(UConverter *converter, ByteBuffer *source_buffer)
+std::string KML::Document::grabString(StringConverter *converter, ByteBuffer *source_buffer)
 {
     // read the string bytes
-    uint32_t length = source_buffer->ReadS32();
-    unsigned char bytes[length];
-    source_buffer->ReadBytes(length, bytes);
+    uint32_t num_bytes = source_buffer->ReadS32();
+    unsigned char bytes[num_bytes];
+    source_buffer->ReadBytes(num_bytes, bytes);
     source_buffer->RealignReads();
 
     // decode and return the string
-    return decodeString(converter, bytes, length);
+    return converter->Decode(bytes, num_bytes);
 }
 
 void KML::Document::grabBytesAligned(ByteBuffer *data_buffer,
@@ -398,7 +375,7 @@ void KML::Document::grabBytesAligned(ByteBuffer *data_buffer,
     }
 }
 
-KML::Node *KML::Document::createNode(UConverter *converter,
+KML::Node *KML::Document::createNode(StringConverter *converter,
                                      std::string name,
                                      KML::NodeFormat format,
                                      unsigned char *bytes,
@@ -418,7 +395,7 @@ KML::Node *KML::Document::createNode(UConverter *converter,
         case KML::NodeFormat::U32:     return KML::Node::FromBytes(name, bytes, num_items, item_size, ByteUtilities::BytesToU32);
         case KML::NodeFormat::S64:     return KML::Node::FromBytes(name, bytes, num_items, item_size, ByteUtilities::BytesToS64);
         case KML::NodeFormat::U64:     return KML::Node::FromBytes(name, bytes, num_items, item_size, ByteUtilities::BytesToU64);
-        case KML::NodeFormat::String:  return new KML::NodeValue<std::string>(name, decodeString(converter, bytes, num_bytes));
+        case KML::NodeFormat::String:  return new KML::NodeValue<std::string>(name, converter->Decode(bytes, num_bytes));
         case KML::NodeFormat::Float:   return KML::Node::FromBytes(name, bytes, num_items, item_size, ByteUtilities::BytesToFloat);
         case KML::NodeFormat::Double:  return KML::Node::FromBytes(name, bytes, num_items, item_size, ByteUtilities::BytesToDouble);
         case KML::NodeFormat::Bool:    return KML::Node::FromBytes(name, bytes, num_items, item_size, ByteUtilities::BytesToBool);
