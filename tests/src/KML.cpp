@@ -1,3 +1,4 @@
+#include <stdlib.h>
 #include <avs/KMLDocument.hpp>
 
 #include "Assert.hpp"
