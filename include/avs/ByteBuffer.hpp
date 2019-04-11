@@ -15,6 +15,11 @@ class ByteBuffer
         // the current offset this buffer is reading from
         unsigned int offset;
 
+        // the base offset of this buffer
+        // this offset is used as the base offset when setting offset
+        // e.g. a base offset of 36 and an offset of 4 will have a final offset of 40
+        unsigned int base_offset;
+
         // the end offset of the data of this buffer
         unsigned int end_offset = UINT_MAX;
 
@@ -22,11 +27,15 @@ class ByteBuffer
         void checkEnd(unsigned int new_offset);
 
     public:
-        // create a buffer from the given byte array
-        ByteBuffer(const unsigned char *buffer, unsigned int start_offset = 0);
+        // create a buffer from the given byte array with the given start and base offsets
+        ByteBuffer(const unsigned char *buffer,
+                   unsigned int start_offset = 0,
+                   unsigned int base_offset = 0);
 
-        // create a buffer from the file at the given path
-        ByteBuffer(std::string path, unsigned int start_offset = 0);
+        // create a buffer from the file at the given path with the given start and base offsets
+        ByteBuffer(std::string path,
+                   unsigned int start_offset = 0,
+                   unsigned int base_offset = 0);
 
         ~ByteBuffer();
 
@@ -39,7 +48,7 @@ class ByteBuffer
         // set the current reading offset of this buffer
         void SetOffset(unsigned int new_offset)
         {
-            offset = new_offset;
+            offset = base_offset + new_offset;
         }
 
         // set the end offset of the data of this buffer
