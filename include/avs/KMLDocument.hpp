@@ -24,6 +24,9 @@ namespace KML
             // returned by formatValues() to indicate that the given format has a dynamic number of values
             const int format_values_dynamic = 0;
 
+            // the string converter of this document
+            StringConverter *converter;
+
             // the root node of this document
             Node *root;
 
@@ -40,7 +43,7 @@ namespace KML
             size_t formatSize(NodeFormat format);
 
             // grab the string at the current reading offset of the given buffer
-            std::string grabString(StringConverter *converter, ByteBuffer *source_buffer);
+            std::string grabString(ByteBuffer *source_buffer);
 
             // grab the number of data bytes at the current reading offset of the given data buffer
             void grabBytesAligned(ByteBuffer *data_buffer,
@@ -50,8 +53,7 @@ namespace KML
                                   unsigned char *out);
 
             // create a node with the given name and bytes of the given format
-            Node *createNode(StringConverter *converter,
-                             std::string name,
+            Node *createNode(std::string name,
                              KML::NodeFormat format,
                              unsigned char *bytes,
                              int num_bytes,
@@ -60,6 +62,12 @@ namespace KML
         public:
             Document(const unsigned char *source);
             ~Document();
+
+            // get the string converter of this document
+            StringConverter *GetConverter()
+            {
+                return converter;
+            }
 
             // get the root node of this document
             Node *GetRoot()

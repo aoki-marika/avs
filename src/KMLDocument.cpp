@@ -40,12 +40,11 @@ KML::Document::Document(const unsigned char *source)
             break;
     }
 
+    converter = new StringConverter(encoding);
+
     // the next byte should always be equal to NOT(encoding key)
     if (node_buffer->ReadU8() != (0xff ^ encoding_key))
         throw std::runtime_error("Given source is not of a valid KML file (NOT(encoding key) incorrect)");
-
-    // get the string converter for the documents encoding
-    StringConverter *converter = new StringConverter(encoding);
 
     // read and set the end offset of the node data
     uint32_t node_end_offset = node_buffer->ReadU32() + 8;
@@ -103,7 +102,7 @@ KML::Document::Document(const unsigned char *source)
 
         if (format & KML::NodeFormat::Attribute)
         {
-            node->AddAttribute(name, grabString(converter, data_buffer));
+            node->AddAttribute(name, grabString(data_buffer));
         }
         else if (format & KML::NodeFormat::NodeEnd)
         {
@@ -161,8 +160,7 @@ KML::Document::Document(const unsigned char *source)
             }
 
             // create the new node with the parsed values
-            KML::Node *child = createNode(converter,
-                                          name,
+            KML::Node *child = createNode(name,
                                           format,
                                           bytes,
                                           num_bytes,
@@ -171,9 +169,6 @@ KML::Document::Document(const unsigned char *source)
             node = child;
         }
     }
-
-    // delete the converter
-    delete converter;
 
     // delete the buffers
     delete word_buffer;
@@ -185,6 +180,7 @@ KML::Document::Document(const unsigned char *source)
 KML::Document::~Document()
 {
     delete root;
+    delete converter;
 }
 
 KML::NodeFormat KML::Document::formatForType(uint8_t type)
@@ -315,14 +311,14 @@ size_t KML::Document::formatSize(KML::NodeFormat format)
         case KML::NodeFormat::Binary:      return sizeof(unsigned char);
         case KML::NodeFormat::String:      return sizeof(char);
         case KML::NodeFormat::IPv4:        return sizeof(uint8_t);
-        case KML::NodeFormat::Timestamp:   return sizeof(uint32_t); //todo: correct?
+        case KML::NodeFormat::Timestamp:   return sizeof(uint32_t);
         case KML::NodeFormat::Float:       return sizeof(float);
         case KML::NodeFormat::Double:      return sizeof(double);
         case KML::NodeFormat::Bool:        return sizeof(signed char);
     }
 }
 
-std::string KML::Document::grabString(StringConverter *converter, ByteBuffer *source_buffer)
+std::string KML::Document::grabString(ByteBuffer *source_buffer)
 {
     // read the string bytes
     uint32_t num_bytes = source_buffer->ReadS32();
@@ -375,8 +371,7 @@ void KML::Document::grabBytesAligned(ByteBuffer *data_buffer,
     }
 }
 
-KML::Node *KML::Document::createNode(StringConverter *converter,
-                                     std::string name,
+KML::Node *KML::Document::createNode(std::string name,
                                      KML::NodeFormat format,
                                      unsigned char *bytes,
                                      int num_bytes,
