@@ -11,7 +11,7 @@ PLATFORM_LINUX=Linux
 
 # get the platform name
 # check for an rpi by checking for one of the broadcam cpus that rpis use
-BCM_CPU=$(shell grep -m 1 -o -P "(?<=BCM)\d{4}" /proc/cpuinfo)
+BCM_CPU=$(shell grep -m 1 -o -P "(?<=BCM)[A-Za-z0-9_]{4}" /proc/cpuinfo)
 ifneq ($(filter $(BCM_CPU),2835 2837B0 2835 2836 2837 2837B0 2835 2837 2837B0 2835),)
 	PLATFORM=$(PLATFORM_RASPBERRY)
 else
