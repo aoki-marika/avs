@@ -6,16 +6,22 @@
 #include "FileReader.hpp"
 #include "ByteUtilities.hpp"
 
-ByteBuffer::ByteBuffer(const unsigned char *buffer, unsigned int start_offset)
+ByteBuffer::ByteBuffer(const unsigned char *buffer,
+                       unsigned int start_offset,
+                       unsigned int base_offset)
 {
     this->reader = new ByteReader(buffer);
-    this->offset = start_offset;
+    this->offset = base_offset + start_offset;
+    this->base_offset = base_offset;
 }
 
-ByteBuffer::ByteBuffer(std::string path, unsigned int start_offset)
+ByteBuffer::ByteBuffer(std::string path,
+                       unsigned int start_offset,
+                       unsigned int base_offset)
 {
     this->reader = new FileReader(path);
-    this->offset = start_offset;
+    this->offset = base_offset + start_offset;
+    this->base_offset = base_offset;
 }
 
 ByteBuffer::~ByteBuffer()
