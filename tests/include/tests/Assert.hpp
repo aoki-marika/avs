@@ -117,7 +117,7 @@ namespace Assert
             Failure(name, &value, &expected);
     }
 
-    template <class T, unsigned N>
+    template <class T, std::size_t N>
     static void NodeArrayEquals(std::string name, KML::Node *node, std::array<T, N> expected)
     {
         KML::NodeArray<T> *array_node = (KML::NodeArray<T> *)node;
