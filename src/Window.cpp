@@ -2,7 +2,12 @@
 
 #include <assert.h>
 #include <GLES2/gl2.h>
-#include <EGL/egl.h>
+
+// namespaced to avoid naming collisions from egl includes
+namespace EGL
+{
+    #include <EGL/egl.h>
+};
 
 void Window::ClearBuffers()
 {
@@ -11,11 +16,13 @@ void Window::ClearBuffers()
 
 void Window::SwapBuffers()
 {
-    eglSwapBuffers(egl_display, egl_surface);
+    EGL::eglSwapBuffers(egl_display, egl_surface);
 }
 
 void Window::CreateContext()
 {
+    using namespace EGL;
+
     // egl and context attributes
     static const EGLint attributes[] =
     {
@@ -75,7 +82,7 @@ void Window::CreateContext()
 
 void Window::DeleteContext()
 {
-    eglDestroySurface(egl_display, egl_surface);
-    eglDestroyContext(egl_display, egl_context);
-    eglTerminate(egl_display);
+    EGL::eglDestroySurface(egl_display, egl_surface);
+    EGL::eglDestroyContext(egl_display, egl_context);
+    EGL::eglTerminate(egl_display);
 }
