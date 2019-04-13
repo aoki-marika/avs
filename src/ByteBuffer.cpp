@@ -84,10 +84,13 @@ uint32_t ByteBuffer::ReadU32()
     return ByteUtilities::BytesToU32(bytes, 0);
 }
 
-void ByteBuffer::RealignReads(unsigned int size)
+unsigned char ByteBuffer::ReadByte()
 {
-    while (offset % size)
-        offset++;
+    unsigned char bytes[sizeof(unsigned char)];
+    reader->ReadBytes(offset, sizeof(unsigned char), bytes);
+    offset += sizeof(unsigned char);
+
+    return bytes[0];
 }
 
 void ByteBuffer::RealignReads(unsigned int size)
