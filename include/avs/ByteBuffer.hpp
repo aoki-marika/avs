@@ -23,9 +23,6 @@ class ByteBuffer
         // the end offset of the data of this buffer
         unsigned int end_offset = UINT_MAX;
 
-        // check if the given offset is beyond end_offset, and if it is then it throws an exception
-        void checkEnd(unsigned int new_offset);
-
     public:
         // create a buffer from the given byte array with the given start and base offsets
         ByteBuffer(const unsigned char *buffer,
