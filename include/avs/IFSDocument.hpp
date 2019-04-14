@@ -5,6 +5,7 @@
 
 #include "IFSDirectory.hpp"
 #include "ByteBuffer.hpp"
+#include "IFSDirectoryTexture.hpp"
 
 namespace IFS
 {
@@ -24,5 +25,18 @@ namespace IFS
             // create an ifs document from the file at the given path
             Document(std::string path);
             ~Document();
+
+            // get the root directory of this document
+            IFS::Directory *GetRoot()
+            {
+                return root;
+            }
+
+            // get the texture directory of this document, if any
+            // returns nullptr if none is found
+            IFS::DirectoryTexture *GetTextureDirectory()
+            {
+                return (IFS::DirectoryTexture *)GetRoot()->GetEntry("tex");
+            }
     };
 };
