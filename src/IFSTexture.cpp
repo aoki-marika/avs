@@ -1,6 +1,8 @@
 #include "IFSTexture.hpp"
 
 #include <iostream>
+#include <GLES2/gl2.h>
+#include <GLES2/gl2ext.h>
 
 #include "IFSImage.hpp"
 
@@ -32,12 +34,44 @@ IFS::Texture::Texture(IFS::Directory *directory,
         // create the image
         images.push_back(new IFS::Image(i, file, compression, format));
     }
+
+    // generate the atlas
+    // get the gl equivalent of this textures format
+    GLenum gl_format = glFormat(format);
+
+    // generate the base texture
+    glGenTextures(1, &id);
+    glBindTexture(GL_TEXTURE_2D, id);
+    glTexImage2D(GL_TEXTURE_2D, 0, gl_format, width, height, 0, gl_format, GL_UNSIGNED_BYTE, NULL);
+
+    // add all the images as subimages
+    for (auto i: images)
+    {
+        Rectangle r = i->GetAtlas();
+        glTexSubImage2D(GL_TEXTURE_2D,
+                        0,
+                        r.StartX,
+                        r.StartY,
+                        r.GetWidth(),
+                        r.GetHeight(),
+                        gl_format,
+                        GL_UNSIGNED_BYTE,
+                        i->GetData());
+    }
+
+    // set the atlas parameters
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, glFilter(min_filter));
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, glFilter(mag_filter));
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, glWrap(wrap_s));
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, glWrap(wrap_t));
 }
 
 IFS::Texture::~Texture()
 {
     for (auto i: images)
         delete i;
+
+    glDeleteTextures(1, &id);
 }
 
 IFS::Image *IFS::Texture::GetImage(std::string name)
@@ -77,4 +111,31 @@ IFS::TextureWrap IFS::Texture::wrapForKey(std::string key)
         return IFS::TextureWrap::Clamp;
     else
         std::cerr << "IFS: Unknown texture wrap \"" << key << "\"" << std::endl;
+}
+
+unsigned int IFS::Texture::glFormat(IFS::TextureFormat format)
+{
+    switch (format)
+    {
+        case IFS::TextureFormat::ARGB8888Rev: return GL_BGRA_EXT;
+        case IFS::TextureFormat::ARGB4444:    return GL_BGRA_EXT;
+        case IFS::TextureFormat::DXT5:        return GL_BGRA_EXT;
+    }
+}
+
+unsigned int IFS::Texture::glFilter(IFS::TextureFilter filter)
+{
+    switch (filter)
+    {
+        case IFS::TextureFilter::Nearest: return GL_NEAREST;
+        case IFS::TextureFilter::Linear:  return GL_LINEAR;
+    }
+}
+
+unsigned int IFS::Texture::glWrap(IFS::TextureWrap wrap)
+{
+    switch (wrap)
+    {
+        case IFS::TextureWrap::Clamp: return GL_CLAMP_TO_EDGE;
+    }
 }
