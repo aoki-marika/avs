@@ -12,6 +12,10 @@ struct Rectangle
     {
     }
 
+    Rectangle() : Rectangle(0, 0, 0, 0)
+    {
+    }
+
     unsigned int GetWidth()
     {
         return EndX - StartX;
