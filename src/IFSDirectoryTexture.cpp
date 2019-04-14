@@ -1,11 +1,13 @@
 #include "IFSDirectoryTexture.hpp"
 
+#include <openssl/md5.h>
+
 #include "IFSFile.hpp"
 #include "KMLDocument.hpp"
 
 IFS::DirectoryTexture::DirectoryTexture(KML::Node *node,
                                         ByteBuffer *data_buffer,
-                                        std::string name) : IFS::DirectoryMD5(node, data_buffer, name, "texturelist.xml", "texture", "image", "png")
+                                        std::string name) : IFS::Directory(node, data_buffer, name)
 {
     // get the texture list source
     IFS::File *texture_list_file = (IFS::File *)this->GetEntry("texturelist.xml");
@@ -16,39 +18,64 @@ IFS::DirectoryTexture::DirectoryTexture(KML::Node *node,
     KML::Document *texture_list = new KML::Document(texture_list_source);
     KML::Node *root = texture_list->GetRoot()->GetNode("texturelist");
 
-    // get whether or not the textures of this directory are compressed
-    bool compressed = root->GetAttribute("compress") == "avslz";
-    printf("compressed:%i\n", compressed);
+    // get the compression format of this texture
+    IFS::TextureCompression compression;
+    if (root->GetAttribute("compress") == "avslz")
+        compression = IFS::TextureCompression::LZ77;
+    else
+        compression = IFS::TextureCompression::Uncompressed;
 
     // read all the textures
     for (auto t: root->GetNodes("texture"))
     {
-        // get the texture attributes
-        std::string directory = t->GetAttribute("name");
-        std::string format = t->GetAttribute("format"); //argb8888rev, argb4444, dxt5
-
-        // get the texture size
-        KML::NodeU16Array size_node = (KML::NodeU16Array)t->GetNode("size");
-        uint16_t texture_width = size_node->GetValue(0);
-        uint16_t texture_height = size_node->GetValue(1);
-
-        printf("texture directory:\"%s\" format:\"%s\" size:%u,%u\n", directory.c_str(), format.c_str(), texture_width, texture_height);
-
-        // get the files for each image
+        // update all the md5 hashed files to use the plaintext names
         for (auto i: t->GetNodes("image"))
         {
-            // get the current images filename
-            std::string filename = i->GetAttribute("name") + ".png";
+            // encode the name of the current image
+            std::string name = i->GetAttribute("name");
+            const int num_encoded_name_bytes = texture_list->GetConverter()->GetBufferSize(name);
+            unsigned char encoded_name_bytes[num_encoded_name_bytes];
+            unsigned int encoded_name_length = texture_list->GetConverter()->Encode(name, encoded_name_bytes);
 
-            // get the file for the current image
-            IFS::File *file = (IFS::File *)this->GetEntry(filename);
-            if (file == nullptr)
-                continue;
+            // get the md5 hash of the encoded name
+            unsigned char md5[MD5_DIGEST_LENGTH];
+            MD5(encoded_name_bytes, encoded_name_length, md5);
 
-            printf("%s: %p\n", filename.c_str(), file);
+            // get the string of the md5 hash
+            char md5_characters[MD5_DIGEST_LENGTH * 2 + 1];
+            for (int i = 0; i < MD5_DIGEST_LENGTH; i++)
+                sprintf(md5_characters + i * 2, "%02x", md5[i]);
+            md5_characters[MD5_DIGEST_LENGTH * 2] = '\0';
+            std::string md5_string = std::string(md5_characters);
+
+            // update the hashed file to use the plaintext name
+            IFS::File *file = (IFS::File *)this->GetEntry(md5_string);
+            if (file != nullptr)
+                file->Name = name;
         }
+
+        // create the texture
+        textures.push_back(new IFS::Texture(this, t, compression));
     }
+
+    // remove all the child entries as theyve now been mapped to textures
+    RemoveEntries();
 
     // free the texture list kml as its now processed
     delete texture_list;
+}
+
+IFS::DirectoryTexture::~DirectoryTexture()
+{
+    for (auto t: textures)
+        delete t;
+}
+
+IFS::Texture *IFS::DirectoryTexture::GetTexture(std::string name)
+{
+    for (auto t: textures)
+        if (t->GetName() == name)
+            return t;
+
+    return nullptr;
 }
