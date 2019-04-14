@@ -57,10 +57,10 @@ namespace IFS
                 return atlas_rect;
             }
 
-            // get a pointer to the data vector of this image
-            std::vector<unsigned char> *GetData()
+            // get the data array of this image
+            unsigned char *GetData()
             {
-                return &data;
+                return data.data();
             }
     };
 };
