@@ -16,6 +16,10 @@ namespace IFS
             // replace all instances of match in string with replacement
             std::string stringReplaceAll(std::string string, std::string match, std::string replacement);
 
+        protected:
+            // remove all the child entries of this directory
+            void RemoveEntries();
+
         public:
             // data_buffer is the buffer that is passed to child files to read data from
             Directory(KML::Node *node,

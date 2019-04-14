@@ -40,8 +40,7 @@ IFS::Directory::Directory(KML::Node *node,
 
 IFS::Directory::~Directory()
 {
-    for (auto c: children)
-        delete c;
+    RemoveEntries();
 }
 
 IFS::Entry *IFS::Directory::GetEntry(std::string name)
@@ -51,6 +50,13 @@ IFS::Entry *IFS::Directory::GetEntry(std::string name)
             return c;
 
     return nullptr;
+}
+
+void IFS::Directory::RemoveEntries()
+{
+    for (auto c: children)
+        delete c;
+    children.clear();
 }
 
 std::string IFS::Directory::stringReplaceAll(std::string string, std::string match, std::string replacement)
