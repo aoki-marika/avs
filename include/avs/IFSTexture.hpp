@@ -42,6 +42,7 @@ namespace IFS
             TextureFormat format;
             TextureFilter min_filter, mag_filter;
             TextureWrap wrap_s, wrap_t;
+            unsigned int width, height;
 
             // the images of this texture
             std::vector<Image *> images;
@@ -76,6 +77,17 @@ namespace IFS
             std::string GetName()
             {
                 return name;
+            }
+
+            // get the width/height of this textures atlas
+            unsigned int GetWidth()
+            {
+                return width;
+            }
+
+            unsigned int GetHeight()
+            {
+                return height;
             }
 
             // get the id of this textures atlas

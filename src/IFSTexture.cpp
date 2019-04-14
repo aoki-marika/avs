@@ -20,8 +20,8 @@ IFS::Texture::Texture(IFS::Directory *directory,
 
     // get the textures size
     KML::NodeU16Array size_node = (KML::NodeU16Array)node->GetNode("size");
-    uint16_t width = size_node->GetValue(0);
-    uint16_t height = size_node->GetValue(1);
+    width = size_node->GetValue(0);
+    height = size_node->GetValue(1);
 
     // read all the images
     for (auto i: node->GetNodes("image"))
