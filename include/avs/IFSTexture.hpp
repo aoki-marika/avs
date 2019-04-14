@@ -20,15 +20,36 @@ namespace IFS
         DXT5,
     };
 
+    enum TextureFilter
+    {
+        Nearest,
+        Linear,
+        // todo: other filters
+    };
+
+    enum TextureWrap
+    {
+        Clamp,
+        // todo: other wrap modes
+    };
+
     class Image;
     class Texture
     {
         private:
-            // the name of this texture
+            // the attributes of this texture
             std::string name;
+            TextureFormat format;
+            TextureFilter min_filter, mag_filter;
+            TextureWrap wrap_s, wrap_t;
 
             // the images of this texture
             std::vector<Image *> images;
+
+            // get the respective data type for the given key
+            TextureFormat formatForKey(std::string key);
+            TextureFilter filterForKey(std::string key);
+            TextureWrap wrapForKey(std::string key);
 
         public:
             // create a new texture from the given directory and node with the given compression

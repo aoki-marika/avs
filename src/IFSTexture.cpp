@@ -1,22 +1,20 @@
 #include "IFSTexture.hpp"
 
+#include <iostream>
+
 #include "IFSImage.hpp"
 
 IFS::Texture::Texture(IFS::Directory *directory,
                       KML::Node *node,
                       IFS::TextureCompression compression)
 {
-    // get the textures name
+    // get the textures attributes
     name = node->GetAttribute("name");
-
-    // get the textures format
-    IFS::TextureFormat format;
-    std::string format_key = node->GetAttribute("format");
-         if (format_key == "argb8888rev") format = IFS::TextureFormat::ARGB8888Rev;
-    else if (format_key == "argb4444")    format = IFS::TextureFormat::ARGB4444;
-    else if (format_key == "dxt5")        format = IFS::TextureFormat::DXT5;
-
-    // todo: read mag, min, and wrap attributes and pass to gles
+    format = formatForKey(node->GetAttribute("format"));
+    min_filter = filterForKey(node->GetAttribute("min_filter"));
+    mag_filter = filterForKey(node->GetAttribute("mag_filter"));
+    wrap_s = wrapForKey(node->GetAttribute("wrap_s"));
+    wrap_t = wrapForKey(node->GetAttribute("wrap_t"));
 
     // get the textures size
     KML::NodeU16Array size_node = (KML::NodeU16Array)node->GetNode("size");
@@ -49,4 +47,34 @@ IFS::Image *IFS::Texture::GetImage(std::string name)
             return i;
 
     return nullptr;
+}
+
+IFS::TextureFormat IFS::Texture::formatForKey(std::string key)
+{
+    if (key == "argb8888rev")
+        return IFS::TextureFormat::ARGB8888Rev;
+    else if (key == "argb4444")
+        return IFS::TextureFormat::ARGB4444;
+    else if (key == "dxt5")
+        return IFS::TextureFormat::DXT5;
+    else
+        std::cerr << "IFS: Unknown texture format \"" << key << "\"" << std::endl;
+}
+
+IFS::TextureFilter IFS::Texture::filterForKey(std::string key)
+{
+    if (key == "nearest")
+        return IFS::TextureFilter::Nearest;
+    else if (key == "linear")
+        return IFS::TextureFilter::Linear;
+    else
+        std::cerr << "IFS: Unknown texture filter \"" << key << "\"" << std::endl;
+}
+
+IFS::TextureWrap IFS::Texture::wrapForKey(std::string key)
+{
+    if (key == "clamp")
+        return IFS::TextureWrap::Clamp;
+    else
+        std::cerr << "IFS: Unknown texture wrap \"" << key << "\"" << std::endl;
 }
