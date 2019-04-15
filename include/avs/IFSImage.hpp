@@ -1,7 +1,5 @@
 #pragma once
 
-#include <vector>
-
 #include "Rectangle.hpp"
 #include "KMLNode.hpp"
 #include "IFSFile.hpp"
@@ -19,16 +17,18 @@ namespace IFS
             Rectangle uv_rect, atlas_rect;
 
             // the uncompressed, decoded data of this image
-            std::vector<unsigned char> data;
+            unsigned char *data;
 
             // pad the given image data to ensure it has enough bytes for all of its pixels
             void padData(Rectangle rect,
-                         std::vector<unsigned char> *data,
+                         unsigned char **data,
+                         unsigned int data_length,
                          unsigned int bytes_per_pixel);
 
             // decode the given image data with the given rect and format
             void decodeData(Rectangle rect,
-                            std::vector<unsigned char> *data,
+                            unsigned char **data,
+                            unsigned int data_length,
                             TextureFormat format);
 
         public:
@@ -38,6 +38,7 @@ namespace IFS
                   File *file,
                   TextureCompression compression,
                   TextureFormat format);
+            ~Image();
 
             // get the name of this image
             std::string GetName()
@@ -60,7 +61,7 @@ namespace IFS
             // get the data array of this image
             unsigned char *GetData()
             {
-                return data.data();
+                return data;
             }
     };
 };

@@ -18,3 +18,9 @@ void IFS::File::GetData(unsigned char *out)
     data_buffer->SetOffset(data_offset);
     data_buffer->ReadBytes(data_size, out);
 }
+
+void IFS::File::GetData(unsigned int num_bytes, unsigned char *out)
+{
+    data_buffer->SetOffset(data_offset);
+    data_buffer->ReadBytes(num_bytes, out);
+}

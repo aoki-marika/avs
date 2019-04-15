@@ -25,45 +25,49 @@ IFS::Image::Image(KML::Node *node,
                            imgrect_node->GetValue(1) / 2,
                            imgrect_node->GetValue(3) / 2);
 
-    // read the raw data
-    unsigned char raw_data[file->GetSize()];
-    file->GetData(raw_data);
-
     // convert the raw data to image data
+    unsigned int data_length;
     switch (compression)
     {
         case IFS::TextureCompression::Uncompressed:
         {
-            // copy the raw data into the data vector
-            data = std::vector<unsigned char>(file->GetSize());
-            for (int i = 0; i < file->GetSize(); i++)
-                data[i] = raw_data[i];
-            break;
+            // read the raw data into the data array
+            data_length = file->GetSize();
+            data = new unsigned char[data_length];
+            file->GetData(data);
         }
         case IFS::TextureCompression::LZ77:
         {
-            // read the decompressed and compressed sizes
-            uint32_t decompressed_size = ByteUtilities::BytesToU32(raw_data, 0);
-            uint32_t compressed_size = ByteUtilities::BytesToU32(raw_data, sizeof(uint32_t));
+            // read the decompressed and compressed sizes of this images file
+            unsigned char header[sizeof(uint32_t) * 2];
+            file->GetData(sizeof(uint32_t) * 2, header);
+            uint32_t decompressed_size = ByteUtilities::BytesToU32(header, 0);
+            uint32_t compressed_size = ByteUtilities::BytesToU32(header, sizeof(uint32_t));
 
             // sometimes headers are missing, meaning its not actually compressed
             // the two extra u32s are moved to the end of the file
             if (file->GetSize() == compressed_size + sizeof(uint32_t) * 2)
             {
-                // decompress the raw data
-                std::vector<unsigned char> decompressed = LZ77::Decompress(raw_data,
-                                                                           file->GetSize(),
-                                                                           decompressed_size,
-                                                                           sizeof(uint32_t) * 2);
-                // pass the image data back
-                data = decompressed;
+                // read the compressed data
+                unsigned char compressed[compressed_size];
+                file->GetData(compressed);
+
+                // decompress the compressed data into data
+                data_length = decompressed_size;
+                data = new unsigned char[decompressed_size];
+                LZ77::Decompress(compressed, data, compressed_size, data_length, sizeof(uint32_t) * 2);
                 break;
             }
             else
             {
-                for (int i = sizeof(uint32_t) * 2; i < file->GetSize() - sizeof(uint32_t) * 2; i++)
-                    data.push_back(raw_data[i]);
-                break;
+                // read the raw data
+                unsigned char raw_data[file->GetSize()];
+                file->GetData(raw_data);
+
+                // copy the raw data without the extra header/footer u32s into data
+                data_length = file->GetSize() - sizeof(uint32_t) * 4;
+                data = new unsigned char[data_length];
+                memcpy(data, raw_data + sizeof(uint32_t) * 2, file->GetSize() - sizeof(uint32_t) * 4);
             }
         }
     }
@@ -71,21 +75,29 @@ IFS::Image::Image(KML::Node *node,
     // decode the image data
     decodeData(atlas_rect,
                &data,
+               data_length,
                format);
 }
 
+IFS::Image::~Image()
+{
+    delete data;
+}
+
 void IFS::Image::padData(Rectangle rect,
-                         std::vector<unsigned char> *data,
+                         unsigned char **data,
+                         unsigned int data_length,
                          unsigned int bytes_per_pixel)
 {
     // ensure the data has bytes for every pixel, and pad it with 0s if not
-    unsigned int num_bytes = rect.GetWidth() * rect.GetHeight() * bytes_per_pixel;
-    if (data->size() < num_bytes)
-        data->insert(data->end(), num_bytes - data->size(), 0x00);
+    unsigned int minimum_bytes = rect.GetWidth() * rect.GetHeight() * bytes_per_pixel;
+    if (data_length < minimum_bytes)
+        *data = (unsigned char *)realloc(*data, minimum_bytes * sizeof(unsigned char));
 }
 
 void IFS::Image::decodeData(Rectangle rect,
-                            std::vector<unsigned char> *data,
+                            unsigned char **data,
+                            unsigned int data_length,
                             IFS::TextureFormat format)
 {
     unsigned int bytes_per_pixel;
@@ -101,9 +113,10 @@ void IFS::Image::decodeData(Rectangle rect,
             // todo: dxt5 support?
             // its a lot more complicated than the other formats and may not be needed for the assets this project uses
             // it is definitely still in use, but oddly only seems to be on "tex001"
+            // definitley needed, many crucial ifs use it (largely gmbgs)
             return;
     }
 
     // pad the data if the given format is one that needs padding
-    padData(rect, data, bytes_per_pixel);
+    padData(rect, data, data_length, bytes_per_pixel);
 }

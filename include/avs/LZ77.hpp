@@ -1,6 +1,5 @@
 #pragma once
 
-#include <vector>
 #include <stdint.h>
 
 #include "ByteBuffer.hpp"
@@ -8,83 +7,55 @@
 class LZ77
 {
     private:
+        static const uint16_t window_size = 0x1000;
+        static const uint16_t window_mask = window_size - 1;
         static const uint16_t threshold = 3;
 
     public:
-        // decompress the given lz77 compressed data, from the given start offset (if any)
-        // returns a vector of the decompressed bytes of length decompressed_length
-        static std::vector<unsigned char> Decompress(unsigned char *data,
-                                                     unsigned int data_length,
-                                                     unsigned int decompressed_length,
-                                                     unsigned int start_offset = 0)
+        // decompress the compressed lz77 in the given buffer, starting from the given offset, if any
+        // reads compressed_size bytes from in and writes the decompressed data to out
+        // in should be of length compressed_size
+        // out should be of length decompressed_size
+        static void Decompress(unsigned char *in,
+                               unsigned char *out,
+                               unsigned int compressed_size,
+                               unsigned int decompressed_size,
+                               unsigned int start_offset = 0)
         {
-            // create the reading buffer and decompressed vector
-            ByteBuffer *buffer = new ByteBuffer(data);
-            std::vector<unsigned char> decompressed(decompressed_length);
 
-            // the current offset to insert new bytes into decompressed at
-            unsigned int offset = 0;
-
-            // advance the buffer to the given start offset
-            unsigned char ignore[start_offset];
-            buffer->ReadBytes(start_offset, ignore);
-
-            // decompress the given data
-            while (true)
+            // decompress the data
+            unsigned int inpos = start_offset, outpos = 0;
+            unsigned char window[window_size] = { 0 };
+            unsigned int window_cursor = 0;
+            while (inpos < compressed_size)
             {
-                unsigned char flag = buffer->ReadByte();
-
+                unsigned char flag = in[inpos++];
                 for (int i = 0; i < 8; i++)
                 {
                     if ((flag >> i) & 1 == 1)
                     {
-                        decompressed[offset] = buffer->ReadByte();
-                        offset++;
+                        out[outpos++] = in[inpos];
+                        window[window_cursor] = in[inpos];
+                        window_cursor = (window_cursor + 1) & window_mask;
+                        inpos++;
                     }
                     else
                     {
-                        int width = buffer->ReadU16();
-                        int position = width >> 4;
-                        int length = (width & 0x0f) + threshold;
-
-                        // return the decompressed data if at the end of the data
-                        if (position == 0)
+                        unsigned int w = in[inpos++] << 8 | in[inpos++];
+                        if (w == 0)
                         {
-                            delete buffer;
-                            return decompressed;
+                            return;
                         }
 
-                        if (position > offset)
+                        unsigned int position = (window_cursor - (w >> 4)) & window_mask;
+                        unsigned int length = (w & 0x0f) + threshold;
+                        for (int l = 0; l < length; l++)
                         {
-                            int difference = position - offset;
-                            if (length < difference)
-                                difference = length;
-
-                            for (int e = 0; e < difference; e++)
-                            {
-                                decompressed[offset + e] = 0;
-                                offset++;
-                            }
-
-                            length -= difference;
-                        }
-
-                        if (-position + length < 0)
-                        {
-                            int start = offset - position;
-                            for (int e = start; e < start + length; e++)
-                            {
-                                decompressed[offset] = decompressed[e];
-                                offset++;
-                            }
-                        }
-                        else
-                        {
-                            for (int e = 0; e < length; e++)
-                            {
-                                decompressed[offset] = decompressed[offset - position];
-                                offset++;
-                            }
+                            unsigned int b = window[position & window_mask];
+                            out[outpos++] = b;
+                            window[window_cursor] = b;
+                            window_cursor = (window_cursor + 1) & window_mask;
+                            position++;
                         }
                     }
                 }

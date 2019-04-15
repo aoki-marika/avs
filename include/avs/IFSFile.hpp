@@ -29,5 +29,8 @@ namespace IFS
 
             // get the data of this file and put it into into the given output
             void GetData(unsigned char *out);
+
+            // read num_bytes bytes from the beginning of this file into the given output
+            void GetData(unsigned int num_bytes, unsigned char *out);
     };
 };
