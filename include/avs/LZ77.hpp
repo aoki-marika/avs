@@ -12,14 +12,18 @@ class LZ77
 
     public:
         // decompress the given lz77 compressed data, from the given start offset (if any)
-        // returns a vector of the decompressed bytes
+        // returns a vector of the decompressed bytes of length decompressed_length
         static std::vector<unsigned char> Decompress(unsigned char *data,
                                                      unsigned int data_length,
+                                                     unsigned int decompressed_length,
                                                      unsigned int start_offset = 0)
         {
             // create the reading buffer and decompressed vector
             ByteBuffer *buffer = new ByteBuffer(data);
-            std::vector<unsigned char> decompressed;
+            std::vector<unsigned char> decompressed(decompressed_length);
+
+            // the current offset to insert new bytes into decompressed at
+            unsigned int offset = 0;
 
             // advance the buffer to the given start offset
             unsigned char ignore[start_offset];
@@ -34,7 +38,8 @@ class LZ77
                 {
                     if ((flag >> i) & 1 == 1)
                     {
-                        decompressed.push_back(buffer->ReadByte());
+                        decompressed[offset] = buffer->ReadByte();
+                        offset++;
                     }
                     else
                     {
@@ -49,26 +54,37 @@ class LZ77
                             return decompressed;
                         }
 
-                        if (position > decompressed.size())
+                        if (position > offset)
                         {
-                            int difference = position - decompressed.size();
+                            int difference = position - offset;
                             if (length < difference)
                                 difference = length;
 
-                            decompressed.insert(decompressed.end(), difference, 0);
+                            for (int e = 0; e < difference; e++)
+                            {
+                                decompressed[offset + e] = 0;
+                                offset++;
+                            }
+
                             length -= difference;
                         }
 
                         if (-position + length < 0)
                         {
-                            int start = decompressed.size() - position;
+                            int start = offset - position;
                             for (int e = start; e < start + length; e++)
-                                decompressed.push_back(decompressed[e]);
+                            {
+                                decompressed[offset] = decompressed[e];
+                                offset++;
+                            }
                         }
                         else
                         {
                             for (int e = 0; e < length; e++)
-                                decompressed.push_back(decompressed[decompressed.size() - position]);
+                            {
+                                decompressed[offset] = decompressed[offset - position];
+                                offset++;
+                            }
                         }
                     }
                 }

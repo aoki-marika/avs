@@ -1,7 +1,5 @@
 #include "IFSImage.hpp"
 
-#include <assert.h>
-
 #include "ByteUtilities.hpp"
 #include "LZ77.hpp"
 
@@ -53,9 +51,10 @@ IFS::Image::Image(KML::Node *node,
             if (file->GetSize() == compressed_size + sizeof(uint32_t) * 2)
             {
                 // decompress the raw data
-                std::vector<unsigned char> decompressed = LZ77::Decompress(raw_data, file->GetSize(), sizeof(uint32_t) * 2);
-                assert(decompressed.size() == decompressed_size);
-
+                std::vector<unsigned char> decompressed = LZ77::Decompress(raw_data,
+                                                                           file->GetSize(),
+                                                                           decompressed_size,
+                                                                           sizeof(uint32_t) * 2);
                 // pass the image data back
                 data = decompressed;
                 break;
