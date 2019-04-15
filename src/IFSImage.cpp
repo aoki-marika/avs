@@ -36,8 +36,10 @@ IFS::Image::Image(KML::Node *node,
     {
         case IFS::TextureCompression::Uncompressed:
         {
-            for (int i = sizeof(uint32_t) * 2; i < file->GetSize() - sizeof(uint32_t) * 2; i++)
-                data.push_back(raw_data[i]);
+            // copy the raw data into the data vector
+            data = std::vector<unsigned char>(file->GetSize());
+            for (int i = 0; i < file->GetSize(); i++)
+                data[i] = raw_data[i];
             break;
         }
         case IFS::TextureCompression::LZ77:
@@ -56,6 +58,12 @@ IFS::Image::Image(KML::Node *node,
 
                 // pass the image data back
                 data = decompressed;
+                break;
+            }
+            else
+            {
+                for (int i = sizeof(uint32_t) * 2; i < file->GetSize() - sizeof(uint32_t) * 2; i++)
+                    data.push_back(raw_data[i]);
                 break;
             }
         }
