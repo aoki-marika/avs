@@ -2,6 +2,7 @@
 
 #include "ByteUtilities.hpp"
 #include "LZ77.hpp"
+#include "DXT5.hpp"
 
 IFS::Image::Image(KML::Node *node,
                   IFS::File *file,
@@ -110,10 +111,27 @@ void IFS::Image::decodeData(Rectangle rect,
             bytes_per_pixel = 2;
             break;
         case IFS::TextureFormat::DXT5:
-            // todo: dxt5 support?
-            // its a lot more complicated than the other formats and may not be needed for the assets this project uses
-            // it is definitely still in use, but oddly only seems to be on "tex001"
-            // definitley needed, many crucial ifs use it (largely gmbgs)
+            // copy the dxt5 data into a new array so it can be decoded in place
+            unsigned char compressed_data[data_length];
+            memcpy(compressed_data, *data, data_length * sizeof(unsigned char));
+
+            // swap endianness
+            for (int i = 0; i < data_length / 2; i++)
+            {
+                unsigned char values[] =
+                {
+                    compressed_data[i * 2 + 0],
+                    compressed_data[i * 2 + 1]
+                };
+
+                compressed_data[i * 2 + 0] = values[1];
+                compressed_data[i * 2 + 1] = values[0];
+            }
+
+            // decode the dxt5 data into data
+            unsigned int w = atlas_rect.GetWidth(), h = atlas_rect.GetHeight();
+            *data = new unsigned char[w * h * 4];
+            DXT5::Decode(w, h, compressed_data, *data);
             return;
     }
 

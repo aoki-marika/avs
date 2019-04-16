@@ -42,6 +42,7 @@ IFS::Texture::Texture(IFS::Directory *directory,
     // generate the base texture
     glGenTextures(1, &id);
     glBindTexture(GL_TEXTURE_2D, id);
+    // todo: rgba4444: GL_UNSIGNED_SHORT_4_4_4_4
     glTexImage2D(GL_TEXTURE_2D, 0, gl_format, width, height, 0, gl_format, GL_UNSIGNED_BYTE, NULL);
 
     // add all the images as subimages
@@ -119,7 +120,7 @@ unsigned int IFS::Texture::glFormat(IFS::TextureFormat format)
     {
         case IFS::TextureFormat::ARGB8888Rev: return GL_BGRA_EXT;
         case IFS::TextureFormat::ARGB4444:    return GL_BGRA_EXT;
-        case IFS::TextureFormat::DXT5:        return GL_BGRA_EXT;
+        case IFS::TextureFormat::DXT5:        return GL_RGBA;
     }
 }
 
