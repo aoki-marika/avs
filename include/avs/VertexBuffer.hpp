@@ -16,7 +16,7 @@ class VertexBuffer : public Buffer
 
     protected:
         // set the vertices starting at the given index to the given vertices
-        // index is in vertices, not values
+        // index is in vertices, not components
         template <std::size_t size>
         void SetVertices(unsigned int index, const std::array<Vector3, size> *vertices)
         {
