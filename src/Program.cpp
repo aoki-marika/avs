@@ -85,3 +85,10 @@ void Program::UniformMatrix4(unsigned int uniform, Matrix4 value)
 {
     glUniformMatrix4fv(uniform, 1, GL_FALSE, &value.Values[0][0]);
 }
+
+void Program::UniformAtlas(unsigned int uniform, Atlas *atlas)
+{
+    atlas->Bind();
+    glUniform1i(uniform, 0);
+    atlas->Unbind();
+}
