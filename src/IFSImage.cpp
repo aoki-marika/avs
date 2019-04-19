@@ -13,7 +13,7 @@ IFS::Image::Image(KML::Node *node,
     name = node->GetAttribute("name");
 
     // get the uv and img rects
-    // all rect values are divided by 2 and relative to the atlas
+    // all rect values are multiplied by 2 and relative to the atlas
     KML::NodeU16Array uvrect_node = (KML::NodeU16Array)node->GetNode("uvrect");
     uv_rect = Rectangle(uvrect_node->GetValue(0) / 2,
                         uvrect_node->GetValue(2) / 2,

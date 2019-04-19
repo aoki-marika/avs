@@ -24,13 +24,11 @@ namespace IFS
     {
         Nearest,
         Linear,
-        // todo: other filters
     };
 
     enum TextureWrap
     {
         Clamp,
-        // todo: other wrap modes
     };
 
     class Image;

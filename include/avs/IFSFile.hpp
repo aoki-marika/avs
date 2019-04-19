@@ -21,7 +21,7 @@ namespace IFS
                  std::string name);
 
             // get the size of the data of this file
-            // used for creating an output array to pass to GetData()
+            // used for creating an output buffer to pass to GetData()
             int32_t GetSize()
             {
                 return data_size;

@@ -13,7 +13,7 @@ namespace IFS
             // the name of this image
             std::string name;
 
-            // the atlas and uv rects of this image
+            // the uv and atlas rects of this image
             Rectangle uv_rect, atlas_rect;
 
             // the uncompressed, decoded data of this image

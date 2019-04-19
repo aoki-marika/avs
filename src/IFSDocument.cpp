@@ -18,7 +18,7 @@ IFS::Document::Document(std::string path)
 
     // the next u16 should equal NOT(version)
     if ((header_buffer->ReadU16() ^ version) != 0xffff)
-        throw std::runtime_error("Given source is not of a valid IFS file (NOT version incorrect)");
+        throw std::runtime_error("Given source is not of a valid IFS file (NOT(version) incorrect)");
 
     // read the creation time and tree size and ignore them as theyre unused here
     header_buffer->ReadU32();

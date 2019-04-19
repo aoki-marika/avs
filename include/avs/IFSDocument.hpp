@@ -16,7 +16,7 @@ namespace IFS
             const uint32_t signature = 0x6cad8f89;
 
             // the root folder of this document
-            IFS::Directory *root;
+            Directory *root;
 
             // the buffer for this ifs files to load file data from
             ByteBuffer *data_buffer;
@@ -27,16 +27,16 @@ namespace IFS
             ~Document();
 
             // get the root directory of this document
-            IFS::Directory *GetRoot()
+            Directory *GetRoot()
             {
                 return root;
             }
 
             // get the texture directory of this document, if any
             // returns nullptr if none is found
-            IFS::DirectoryTexture *GetTextureDirectory()
+            DirectoryTexture *GetTextureDirectory()
             {
-                return (IFS::DirectoryTexture *)GetRoot()->GetEntry("tex");
+                return (DirectoryTexture *)GetRoot()->GetEntry("tex");
             }
     };
 };
