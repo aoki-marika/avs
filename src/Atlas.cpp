@@ -31,7 +31,7 @@ void Atlas::AddImage(std::string name,
                      unsigned int y,
                      unsigned int width,
                      unsigned int height,
-                     const unsigned char *data)
+                     const void *data)
 {
     // add the image to the base texture
     glBindTexture(GL_TEXTURE_2D, id);

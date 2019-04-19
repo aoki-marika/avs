@@ -39,7 +39,7 @@ class Atlas
                       unsigned int y,
                       unsigned int width,
                       unsigned int height,
-                      const unsigned char *data);
+                      const void *data);
 
         // set the given pointers to the width/height of the image of the given name in this atlas
         // returns silently if no image by the given name is found in this atlas
