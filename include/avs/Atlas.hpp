@@ -41,6 +41,12 @@ class Atlas
                       unsigned int height,
                       const unsigned char *data);
 
+        // set the given pointers to the width/height of the image of the given name in this atlas
+        // returns silently if no image by the given name is found in this atlas
+        void GetImageSize(std::string name,
+                          unsigned int *width,
+                          unsigned int *height);
+
         // set the given uv buffers data at the given index to the uvs of the image of the given name in this atlas
         // returns silently if no image by the given name is found in this atlas
         void SetBufferData(UVBuffer *buffer,
