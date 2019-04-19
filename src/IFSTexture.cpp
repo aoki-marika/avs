@@ -39,11 +39,15 @@ IFS::Texture::Texture(IFS::Directory *directory,
     // get the gl equivalent of this textures format
     GLenum gl_format = glFormat(format);
 
+    // get the gl data type
+    GLenum gl_type = GL_UNSIGNED_BYTE;
+    if (format == IFS::TextureFormat::ARGB4444)
+        gl_type = GL_UNSIGNED_SHORT_4_4_4_4;
+
     // generate the base texture
     glGenTextures(1, &id);
     glBindTexture(GL_TEXTURE_2D, id);
-    // todo: rgba4444: GL_UNSIGNED_SHORT_4_4_4_4
-    glTexImage2D(GL_TEXTURE_2D, 0, gl_format, width, height, 0, gl_format, GL_UNSIGNED_BYTE, NULL);
+    glTexImage2D(GL_TEXTURE_2D, 0, gl_format, width, height, 0, gl_format, gl_type, NULL);
 
     // add all the images as subimages
     for (auto i: images)
