@@ -3,7 +3,7 @@
 #include <string>
 #include <map>
 
-#include "AtlasCoordinates.hpp"
+#include "AtlasImage.hpp"
 #include "UVBuffer.hpp"
 
 typedef unsigned int GLenum;
@@ -19,8 +19,8 @@ class Atlas
         // the texture data format/type of this atlas
         GLenum format, type;
 
-        // the coordinates of the images in this atlas
-        std::map<std::string, AtlasCoordinates> coordinates;
+        // the images in this atlas
+        std::map<std::string, AtlasImage> images;
 
     public:
         // create a new atlas of the given width and height, with the given properties for the base texture

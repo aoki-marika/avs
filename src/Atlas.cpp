@@ -37,11 +37,13 @@ void Atlas::AddImage(std::string name,
     glBindTexture(GL_TEXTURE_2D, id);
     glTexSubImage2D(GL_TEXTURE_2D, 0, x, y, width, height, format, type, data);
 
-    // add the image to the coordinates map
+    // add the images to this atlas images
     float sx = x / this->width, ex = (x + width) / this->height;
     float sy = y / this->height, ey = (y + height) / this->height;
-    coordinates[name] =
+    images[name] =
     {
+        .Width = width,
+        .Height = height,
         .A = UV(sx, sy),
         .B = UV(sx, ey),
         .C = UV(ex, ey),
@@ -49,22 +51,36 @@ void Atlas::AddImage(std::string name,
     };
 }
 
+void Atlas::GetImageSize(std::string name,
+                         unsigned int *width,
+                         unsigned int *height)
+{
+    // return early if the given uv name is not in this atlas
+    if (images.find(name) == images.end())
+        return;
+
+    // write the width/height to the given pointers
+    AtlasImage i = images[name];
+    *width = i.Width;
+    *height = i.Height;
+}
+
 void Atlas::SetBufferData(UVBuffer *buffer,
                           unsigned int index,
                           std::string name)
 {
     // return early if the given uv name is not in this atlas
-    if (coordinates.find(name) == coordinates.end())
+    if (images.find(name) == images.end())
         return;
 
     // write the uvs to the given buffer
     // note: these are mapped to the vertex layout of VertexBuffer::Quad
     // if that changes this will need to change too
-    AtlasCoordinates c = coordinates[name];
+    AtlasImage i = images[name];
     const std::array<UV, 6> data =
     {
-        c.A, c.B, c.D,
-        c.B, c.C, c.D,
+        i.A, i.B, i.D,
+        i.B, i.C, i.D,
     };
 
     buffer->SetUVs(index, &data);
