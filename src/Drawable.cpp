@@ -83,9 +83,7 @@ void Drawable::Draw(Camera *camera)
     program->UniformMatrix4(uniform_pv, camera->GetMatrix());
 
     // draw the quad from the vertex buffer
-    glEnableVertexAttribArray(attrib_vertex_position);
-    vertex_buffer->Bind();
-    glVertexAttribPointer(attrib_vertex_position, vertex_buffer->GetVertexSize(), GL_FLOAT, GL_FALSE, 0, NULL);
-    glDrawArrays(GL_TRIANGLES, 0, vertex_buffer->GetMaxVertices());
-    glDisableVertexAttribArray(attrib_vertex_position);
+    vertex_buffer->BindAttribute(attrib_vertex_position);
+    vertex_buffer->DrawAll();
+    vertex_buffer->UnbindAttribute(attrib_vertex_position);
 }
