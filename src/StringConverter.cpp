@@ -51,7 +51,7 @@ unsigned int StringConverter::Encode(std::string string, unsigned char *out_byte
     ucnv_toUChars(converter, unicode_characters, num_unicode_characters, string.c_str(), string.length(), &error);
 
     // decode the unicode characters
-    const uint32_t num_characters = string.length();
+    const uint32_t num_characters = GetBufferSize(string);
     char characters[num_characters];
     int32_t length = ucnv_fromUChars(converter, characters, num_characters, unicode_characters, num_unicode_characters, &error);
 
