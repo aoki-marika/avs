@@ -92,7 +92,7 @@ KML::Document::Document(const unsigned char *source)
                     name = Sixbit::Unpack(node_buffer);
                     break;
                 case KML::Compression::Uncompressed:
-                    uint8_t num_bytes = node_buffer->ReadU8();
+                    uint8_t num_bytes = (node_buffer->ReadU8() & ~64) + 1;
                     unsigned char bytes[num_bytes];
                     node_buffer->ReadBytes(num_bytes, bytes);
                     name = converter->Decode(bytes, num_bytes);

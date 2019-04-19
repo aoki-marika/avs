@@ -41,15 +41,15 @@ bool ByteBuffer::AtEnd()
 
 void ByteBuffer::ReadBytes(unsigned int num_bytes, unsigned char *out)
 {
-    checkEnd(offset);
+    if (offset >= end_offset)
+        throw new std::runtime_error("This buffer has reached the end of it's data");
+
     reader->ReadBytes(offset, num_bytes, out);
     offset += num_bytes;
 }
 
 uint8_t ByteBuffer::ReadU8()
 {
-    checkEnd(offset);
-
     unsigned char bytes[sizeof(uint8_t)];
     reader->ReadBytes(offset, sizeof(uint8_t), bytes);
     offset += sizeof(uint8_t);
@@ -59,8 +59,6 @@ uint8_t ByteBuffer::ReadU8()
 
 uint16_t ByteBuffer::ReadU16()
 {
-    checkEnd(offset);
-
     unsigned char bytes[sizeof(uint16_t)];
     reader->ReadBytes(offset, sizeof(uint16_t), bytes);
     offset += sizeof(uint16_t);
@@ -70,8 +68,6 @@ uint16_t ByteBuffer::ReadU16()
 
 int32_t ByteBuffer::ReadS32()
 {
-    checkEnd(offset);
-
     unsigned char bytes[sizeof(int32_t)];
     reader->ReadBytes(offset, sizeof(int32_t), bytes);
     offset += sizeof(int32_t);
@@ -81,8 +77,6 @@ int32_t ByteBuffer::ReadS32()
 
 uint32_t ByteBuffer::ReadU32()
 {
-    checkEnd(offset);
-
     unsigned char bytes[sizeof(uint32_t)];
     reader->ReadBytes(offset, sizeof(uint32_t), bytes);
     offset += sizeof(uint32_t);
@@ -90,14 +84,17 @@ uint32_t ByteBuffer::ReadU32()
     return ByteUtilities::BytesToU32(bytes, 0);
 }
 
+unsigned char ByteBuffer::ReadByte()
+{
+    unsigned char bytes[sizeof(unsigned char)];
+    reader->ReadBytes(offset, sizeof(unsigned char), bytes);
+    offset += sizeof(unsigned char);
+
+    return bytes[0];
+}
+
 void ByteBuffer::RealignReads(unsigned int size)
 {
     while (offset % size)
         offset++;
-}
-
-void ByteBuffer::checkEnd(unsigned int new_offset)
-{
-    if (new_offset >= end_offset)
-        throw new std::runtime_error("This buffer has reached the end of it's data");
 }
