@@ -83,7 +83,17 @@ void Drawable::Draw(Camera *camera)
     program->UniformMatrix4(uniform_pv, camera->GetMatrix());
 
     // draw the quad from the vertex buffer
-    vertex_buffer->BindAttribute(attrib_vertex_position);
+    BeginDraw();
     vertex_buffer->DrawAll();
+    EndDraw();
+}
+
+void Drawable::BeginDraw()
+{
+    vertex_buffer->BindAttribute(attrib_vertex_position);
+}
+
+void Drawable::EndDraw()
+{
     vertex_buffer->UnbindAttribute(attrib_vertex_position);
 }

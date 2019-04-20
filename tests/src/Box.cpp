@@ -6,7 +6,7 @@
 int main()
 {
     // setup the window and camera
-    float width = 1280, height = 720;
+    unsigned int width = 1280, height = 720;
     Window *window = new Window("Box", width, height);
     Camera3D *camera = new Camera3D(90, width / height, 0.1f, 100.0f);
     camera->SetPosition(Vector3(5, 5, -5));

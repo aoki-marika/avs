@@ -32,6 +32,13 @@ class Drawable
             return program;
         }
 
+        // methods called before and after the vertices of this drawable are drawn
+        // Drawable implements these to bind the vertex position to the fragmemt shader
+        // so subclasses should call the base implementation when overriding
+        // this drawables program is used before these methods are called
+        virtual void BeginDraw();
+        virtual void EndDraw();
+
     public:
         // note: all drawable fragment shaders should have a float uniform called "alpha"
         // that should be used to multiply the output alpha
