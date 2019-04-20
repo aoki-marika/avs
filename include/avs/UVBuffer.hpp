@@ -8,7 +8,7 @@
 class UVBuffer : public Buffer
 {
     private:
-        const unsigned int num_uv_components = 2;
+        static const unsigned int num_uv_components = 2;
 
     public:
         UVBuffer(unsigned int num_uvs,
