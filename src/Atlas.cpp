@@ -27,31 +27,46 @@ Atlas::~Atlas()
 }
 
 void Atlas::AddImage(std::string name,
+                     unsigned int image_x,
+                     unsigned int image_y,
+                     unsigned int image_width,
+                     unsigned int image_height,
+                     unsigned int uv_x,
+                     unsigned int uv_y,
+                     unsigned int uv_width,
+                     unsigned int uv_height,
+                     const void *data)
+{
+    // add the image to the base texture
+    glBindTexture(GL_TEXTURE_2D, id);
+    glTexSubImage2D(GL_TEXTURE_2D, 0, image_x, image_y, image_width, image_height, format, type, data);
+
+    // add the image to this atlas images
+    float w = this->width, h = this->height;
+    float sx = (float)uv_x / w;
+    float ex = (float)(uv_x + uv_width) / w;
+    float sy = uv_y / h;
+    float ey = (float)(uv_y + uv_height) / h;
+    images[name] =
+    {
+        .Width = uv_width,
+        .Height = uv_height,
+        .A = UV(sx, ey),
+        .B = UV(sx, sy),
+        .C = UV(ex, sy),
+        .D = UV(ex, ey),
+    };
+}
+
+void Atlas::AddImage(std::string name,
                      unsigned int x,
                      unsigned int y,
                      unsigned int width,
                      unsigned int height,
                      const void *data)
 {
-    // add the image to the base texture
-    glBindTexture(GL_TEXTURE_2D, id);
-    glTexSubImage2D(GL_TEXTURE_2D, 0, x, y, width, height, format, type, data);
-
-    // add the images to this atlas images
-    float w = this->width, h = this->height;
-    float sx = (float)x / w;
-    float ex = (float)(x + width) / w;
-    float sy = y / h;
-    float ey = (float)(y + height) / h;
-    images[name] =
-    {
-        .Width = width,
-        .Height = height,
-        .A = UV(sx, sy),
-        .B = UV(sx, ey),
-        .C = UV(ex, ey),
-        .D = UV(ex, sy),
-    };
+    // add the given image with the same rect for image and uv
+    AddImage(name, x, y, width, height, x, y, width, height, data);
 }
 
 void Atlas::GetImageSize(std::string name,
