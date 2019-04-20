@@ -10,7 +10,6 @@ class Box : public Drawable
 
     public:
         Box();
-        ~Box();
 
         // set the draw colour of this box to the given colour
         // defaults to white

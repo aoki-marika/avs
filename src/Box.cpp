@@ -10,10 +10,6 @@ Box::Box() : Drawable(ShaderSource::BOX_FRAGMENT)
     SetColour(Colour4::White());
 }
 
-Box::~Box()
-{
-}
-
 void Box::SetColour(Colour4 colour)
 {
     GetProgram()->Use();
