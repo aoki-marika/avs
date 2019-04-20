@@ -11,14 +11,14 @@ HEADER
 
 # for each shader file in the given path
 shaders_path=$(realpath $1)
-for path in $(ls $shaders_path/*.vert $shaders_path/*.frag); do
+for path in $(ls $shaders_path/*.vs $shaders_path/*.fs); do
     # get the contents of the current shader file
     contents="$(cat $path)"
 
     # get the name for the constant in the header
     name=$(basename "$path" | sed -E 's/./\U&/g')
-    name=$(echo "$name" | sed -E 's/.VERT/_VERTEX/g')
-    name=$(echo "$name" | sed -E 's/.FRAG/_FRAGMENT/g')
+    name=$(echo "$name" | sed -E 's/.VS/_VERTEX/g')
+    name=$(echo "$name" | sed -E 's/.FS/_FRAGMENT/g')
 
     # append the shader to the header
     # rpi autodefines float precision, but it still needs to be defined on other platforms
@@ -30,8 +30,7 @@ precision mediump float;
 #endif
 
 $contents
-)SOURCE";
-
+)SOURCE";\n
 SOURCE
 )
 done
