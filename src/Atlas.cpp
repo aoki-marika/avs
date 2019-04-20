@@ -38,8 +38,11 @@ void Atlas::AddImage(std::string name,
     glTexSubImage2D(GL_TEXTURE_2D, 0, x, y, width, height, format, type, data);
 
     // add the images to this atlas images
-    float sx = x / this->width, ex = (x + width) / this->height;
-    float sy = y / this->height, ey = (y + height) / this->height;
+    float w = this->width, h = this->height;
+    float sx = (float)x / w;
+    float ex = (float)(x + width) / w;
+    float sy = y / h;
+    float ey = (float)(y + height) / h;
     images[name] =
     {
         .Width = width,
