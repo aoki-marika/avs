@@ -3,6 +3,7 @@
 #include "Shader.hpp"
 #include "Matrix4.hpp"
 #include "Colour4.hpp"
+#include "Atlas.hpp"
 
 class Program
 {
@@ -26,4 +27,5 @@ class Program
         void UniformVector3(unsigned int uniform, Vector3 value);
         void UniformColour4(unsigned int uniform, Colour4 value);
         void UniformMatrix4(unsigned int uniform, Matrix4 value);
+        void UniformAtlas(unsigned int uniform, Atlas *atlas);
 };
