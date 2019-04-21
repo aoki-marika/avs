@@ -58,7 +58,7 @@ IFS::Document::~Document()
 Atlas *IFS::Document::GetAtlas(std::string name)
 {
     // get the textures directory
-    IFS::DirectoryTexture *textures = (IFS::DirectoryTexture *)GetRoot()->GetEntry("tex");
+    IFS::TextureDirectory *textures = (IFS::TextureDirectory *)GetRoot()->GetEntry("tex");
     if (textures == nullptr)
         return nullptr;
 

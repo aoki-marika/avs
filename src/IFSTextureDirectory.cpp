@@ -1,11 +1,11 @@
-#include "IFSDirectoryTexture.hpp"
+#include "IFSTextureDirectory.hpp"
 
 #include <openssl/md5.h>
 
 #include "IFSFile.hpp"
 #include "KMLDocument.hpp"
 
-IFS::DirectoryTexture::DirectoryTexture(KML::Node *node,
+IFS::TextureDirectory::TextureDirectory(KML::Node *node,
                                         ByteBuffer *data_buffer,
                                         std::string name) : IFS::Directory(node, data_buffer, name)
 {
@@ -65,13 +65,13 @@ IFS::DirectoryTexture::DirectoryTexture(KML::Node *node,
     delete texture_list;
 }
 
-IFS::DirectoryTexture::~DirectoryTexture()
+IFS::TextureDirectory::~TextureDirectory()
 {
     for (auto t: textures)
         delete t;
 }
 
-Atlas *IFS::DirectoryTexture::GetAtlas(std::string name)
+Atlas *IFS::TextureDirectory::GetAtlas(std::string name)
 {
     for (auto t: textures)
         if (t->GetName() == name)

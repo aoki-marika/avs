@@ -1,6 +1,6 @@
 #include "IFSDirectory.hpp"
 
-#include "IFSDirectoryTexture.hpp"
+#include "IFSTextureDirectory.hpp"
 #include "IFSFile.hpp"
 
 IFS::Directory::Directory(KML::Node *node,
@@ -28,7 +28,7 @@ IFS::Directory::Directory(KML::Node *node,
         {
             // handle the various directory types
             if (name == "tex")
-                children.push_back(new IFS::DirectoryTexture(c, data_buffer, name));
+                children.push_back(new IFS::TextureDirectory(c, data_buffer, name));
             else
                 children.push_back(new IFS::Directory(c, data_buffer, name));
         }
