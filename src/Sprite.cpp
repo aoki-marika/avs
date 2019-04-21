@@ -19,6 +19,10 @@ Sprite::~Sprite()
 
 void Sprite::SetImage(Atlas *atlas, std::string name)
 {
+    // pass the texture to the shader
+    GetProgram()->Use();
+    GetProgram()->UniformAtlas(uniform_sampler, atlas);
+
     // write the uv values to the uv buffer
     atlas->SetBufferData(uv_buffer, 0, name);
 
@@ -26,10 +30,14 @@ void Sprite::SetImage(Atlas *atlas, std::string name)
     unsigned int width, height;
     atlas->GetImageSize(name, &width, &height);
     this->SetSize(Vector3(width, height, 1));
+
+    // store the atlas to bind when drawing
+    this->atlas = atlas;
 }
 
 void Sprite::BeginDraw()
 {
+    if (atlas != nullptr) atlas->Bind();
     Drawable::BeginDraw();
     uv_buffer->BindAttribute(attrib_vertex_uv);
 }
@@ -38,4 +46,5 @@ void Sprite::EndDraw()
 {
     uv_buffer->UnbindAttribute(attrib_vertex_uv);
     Drawable::EndDraw();
+    if (atlas != nullptr) atlas->Unbind();
 }

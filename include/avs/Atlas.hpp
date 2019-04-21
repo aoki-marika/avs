@@ -32,8 +32,20 @@ class Atlas
               GLenum wrap_s, GLenum wrap_t);
         ~Atlas();
 
-        // add an image to this atlas of the given name with the given position, size, and data
+        // add an image to this atlas of the given name with the given image/uv position, size, and data
         // data should be raw pixel data to upload to gles, with the same format/type passed to the ctor
+        void AddImage(std::string name,
+                      unsigned int image_x,
+                      unsigned int image_y,
+                      unsigned int image_width,
+                      unsigned int image_height,
+                      unsigned int uv_x,
+                      unsigned int uv_y,
+                      unsigned int uv_width,
+                      unsigned int uv_height,
+                      const void *data);
+
+        // AddImage() but x/y/width/height are used for both image and uv rects
         void AddImage(std::string name,
                       unsigned int x,
                       unsigned int y,
