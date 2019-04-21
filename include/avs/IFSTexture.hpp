@@ -19,18 +19,6 @@ namespace IFS
         DXT5,
     };
 
-    // todo: removeme, only need gl counterpart of these types
-    enum TextureFilter
-    {
-        Nearest,
-        Linear,
-    };
-
-    enum TextureWrap
-    {
-        Clamp,
-    };
-
     class Image;
     class Texture
     {
@@ -43,13 +31,11 @@ namespace IFS
 
             // get the respective data type for the given key
             TextureFormat formatForKey(std::string key);
-            TextureFilter filterForKey(std::string key);
-            TextureWrap wrapForKey(std::string key);
+            unsigned int filterForKey(std::string key);
+            unsigned int wrapForKey(std::string key);
 
-            // get the respective gl equivalent for the given data type
+            // get the respective gl format for the given texture format
             unsigned int glFormat(TextureFormat format);
-            unsigned int glFilter(TextureFilter format);
-            unsigned int glWrap(TextureWrap format);
 
         public:
             // create a new texture from the given directory and node with the given compression
