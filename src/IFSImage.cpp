@@ -85,6 +85,21 @@ IFS::Image::~Image()
     delete data;
 }
 
+void IFS::Image::AddToAtlas(Atlas *atlas)
+{
+    // add this image to the given atlas
+    atlas->AddImage(name,
+                    atlas_rect.StartX,
+                    atlas_rect.StartY,
+                    atlas_rect.GetWidth(),
+                    atlas_rect.GetHeight(),
+                    uv_rect.StartX,
+                    uv_rect.StartY,
+                    uv_rect.GetWidth(),
+                    uv_rect.GetHeight(),
+                    data);
+}
+
 void IFS::Image::padData(Rectangle rect,
                          unsigned char **data,
                          unsigned int data_length,
@@ -129,7 +144,7 @@ void IFS::Image::decodeData(Rectangle rect,
             }
 
             // decode the dxt5 data into data
-            unsigned int w = atlas_rect.GetWidth(), h = atlas_rect.GetHeight();
+            unsigned int w = rect.GetWidth(), h = rect.GetHeight();
             *data = new unsigned char[w * h * 4];
             DXT5::Decode(w, h, compressed_data, *data);
             return;

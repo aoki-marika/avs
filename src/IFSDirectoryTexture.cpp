@@ -71,11 +71,11 @@ IFS::DirectoryTexture::~DirectoryTexture()
         delete t;
 }
 
-IFS::Texture *IFS::DirectoryTexture::GetTexture(std::string name)
+Atlas *IFS::DirectoryTexture::GetAtlas(std::string name)
 {
     for (auto t: textures)
         if (t->GetName() == name)
-            return t;
+            return t->GetAtlas();
 
     return nullptr;
 }

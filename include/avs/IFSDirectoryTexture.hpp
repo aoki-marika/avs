@@ -4,10 +4,12 @@
 
 #include "IFSDirectory.hpp"
 #include "IFSTexture.hpp"
+#include "Atlas.hpp"
 
 namespace IFS
 {
     // tex directory
+    // todo: -> TextureDirectory
     class DirectoryTexture : public Directory
     {
         private:
@@ -20,8 +22,8 @@ namespace IFS
                              std::string name);
             ~DirectoryTexture();
 
-            // get a pointer to the first texture of this directory matching the given name
-            // returns nullptr if none is found
-            Texture *GetTexture(std::string name);
+            // get a pointer to the first atlas of the given name from this directory
+            // returns nullptr if no match is found
+            Atlas *GetAtlas(std::string name);
     };
 };

@@ -1,7 +1,6 @@
 #pragma once
 
-#include <vector>
-
+#include "Atlas.hpp"
 #include "KMLNode.hpp"
 #include "IFSDirectory.hpp"
 
@@ -20,6 +19,7 @@ namespace IFS
         DXT5,
     };
 
+    // todo: removeme, only need gl counterpart of these types
     enum TextureFilter
     {
         Nearest,
@@ -35,18 +35,11 @@ namespace IFS
     class Texture
     {
         private:
-            // the attributes of this texture
+            // the name of this texture
             std::string name;
-            TextureFormat format;
-            TextureFilter min_filter, mag_filter;
-            TextureWrap wrap_s, wrap_t;
-            unsigned int width, height;
 
-            // the images of this texture
-            std::vector<Image *> images;
-
-            // the id of the atlas for this texture
-            unsigned int id;
+            // the atlas of this textures images
+            Atlas *atlas;
 
             // get the respective data type for the given key
             TextureFormat formatForKey(std::string key);
@@ -67,31 +60,16 @@ namespace IFS
                     TextureCompression compression);
             ~Texture();
 
-            // get a pointer to the first image of this texture matching the given name
-            // returns nullptr if none is found
-            Image *GetImage(std::string name);
-
             // get the name of this texture
             std::string GetName()
             {
                 return name;
             }
 
-            // get the width/height of this textures atlas
-            unsigned int GetWidth()
+            // get a pointer to the atlas of this texture
+            Atlas *GetAtlas()
             {
-                return width;
-            }
-
-            unsigned int GetHeight()
-            {
-                return height;
-            }
-
-            // get the id of this textures atlas
-            unsigned int GetID()
-            {
-                return id;
+                return atlas;
             }
     };
 };

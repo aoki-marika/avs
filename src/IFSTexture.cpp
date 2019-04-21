@@ -10,18 +10,24 @@ IFS::Texture::Texture(IFS::Directory *directory,
                       KML::Node *node,
                       IFS::TextureCompression compression)
 {
-    // get the textures attributes
+    // get this textures attributes
     name = node->GetAttribute("name");
-    format = formatForKey(node->GetAttribute("format"));
-    min_filter = filterForKey(node->GetAttribute("min_filter"));
-    mag_filter = filterForKey(node->GetAttribute("mag_filter"));
-    wrap_s = wrapForKey(node->GetAttribute("wrap_s"));
-    wrap_t = wrapForKey(node->GetAttribute("wrap_t"));
+    TextureFormat format = formatForKey(node->GetAttribute("format"));
+    TextureFilter min_filter = filterForKey(node->GetAttribute("min_filter"));
+    TextureFilter mag_filter = filterForKey(node->GetAttribute("mag_filter"));
+    TextureWrap wrap_s = wrapForKey(node->GetAttribute("wrap_s"));
+    TextureWrap wrap_t = wrapForKey(node->GetAttribute("wrap_t"));
 
-    // get the textures size
+    // generate the atlas
     KML::NodeU16Array size_node = (KML::NodeU16Array)node->GetNode("size");
-    width = size_node->GetValue(0);
-    height = size_node->GetValue(1);
+    atlas = new Atlas(size_node->GetValue(0),
+                      size_node->GetValue(1),
+                      glFormat(format),
+                      (format == IFS::TextureFormat::ARGB4444) ? GL_UNSIGNED_SHORT_4_4_4_4 : GL_UNSIGNED_BYTE,
+                      glFilter(min_filter),
+                      glFilter(mag_filter),
+                      glWrap(wrap_s),
+                      glWrap(wrap_t));
 
     // read all the images
     for (auto i: node->GetNodes("image"))
@@ -31,61 +37,16 @@ IFS::Texture::Texture(IFS::Directory *directory,
         if (file == nullptr)
             continue;
 
-        // create the image
-        images.push_back(new IFS::Image(i, file, compression, format));
+        // create the image, add it to the atlas, and delete it
+        IFS::Image *image = new IFS::Image(i, file, compression, format);
+        image->AddToAtlas(atlas);
+        delete image;
     }
-
-    // generate the atlas
-    // get the gl equivalent of this textures format
-    GLenum gl_format = glFormat(format);
-
-    // get the gl data type
-    GLenum gl_type = GL_UNSIGNED_BYTE;
-    if (format == IFS::TextureFormat::ARGB4444)
-        gl_type = GL_UNSIGNED_SHORT_4_4_4_4;
-
-    // generate the base texture
-    glGenTextures(1, &id);
-    glBindTexture(GL_TEXTURE_2D, id);
-    glTexImage2D(GL_TEXTURE_2D, 0, gl_format, width, height, 0, gl_format, gl_type, NULL);
-
-    // add all the images as subimages
-    for (auto i: images)
-    {
-        Rectangle r = i->GetAtlas();
-        glTexSubImage2D(GL_TEXTURE_2D,
-                        0,
-                        r.StartX,
-                        r.StartY,
-                        r.GetWidth(),
-                        r.GetHeight(),
-                        gl_format,
-                        GL_UNSIGNED_BYTE,
-                        i->GetData());
-    }
-
-    // set the atlas parameters
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, glFilter(min_filter));
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, glFilter(mag_filter));
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, glWrap(wrap_s));
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, glWrap(wrap_t));
 }
 
 IFS::Texture::~Texture()
 {
-    for (auto i: images)
-        delete i;
-
-    glDeleteTextures(1, &id);
-}
-
-IFS::Image *IFS::Texture::GetImage(std::string name)
-{
-    for (auto i: images)
-        if (i->GetName() == name)
-            return i;
-
-    return nullptr;
+    delete atlas;
 }
 
 IFS::TextureFormat IFS::Texture::formatForKey(std::string key)

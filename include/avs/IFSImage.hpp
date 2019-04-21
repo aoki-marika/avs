@@ -7,6 +7,7 @@
 
 namespace IFS
 {
+    // todo: convert to a ImageLoader (?) as thats all this does
     class Image
     {
         private:
@@ -14,6 +15,7 @@ namespace IFS
             std::string name;
 
             // the uv and atlas rects of this image
+            // todo: remove rectangle type and just store x/y/width/height here
             Rectangle uv_rect, atlas_rect;
 
             // the uncompressed, decoded data of this image
@@ -40,28 +42,7 @@ namespace IFS
                   TextureFormat format);
             ~Image();
 
-            // get the name of this image
-            std::string GetName()
-            {
-                return name;
-            }
-
-            // get the uv rectangle of this image
-            Rectangle GetUV()
-            {
-                return uv_rect;
-            }
-
-            // get the atlas rectangle of this image
-            Rectangle GetAtlas()
-            {
-                return atlas_rect;
-            }
-
-            // get the data array of this image
-            unsigned char *GetData()
-            {
-                return data;
-            }
+            // add this image to the given atlas
+            void AddToAtlas(Atlas *atlas);
     };
 };

@@ -54,3 +54,14 @@ IFS::Document::~Document()
     delete root;
     delete data_buffer;
 }
+
+Atlas *IFS::Document::GetAtlas(std::string name)
+{
+    // get the textures directory
+    IFS::DirectoryTexture *textures = (IFS::DirectoryTexture *)GetRoot()->GetEntry("tex");
+    if (textures == nullptr)
+        return nullptr;
+
+    // return the atlas of the given name from the textures directory
+    return textures->GetAtlas(name);
+}

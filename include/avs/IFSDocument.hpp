@@ -5,6 +5,7 @@
 
 #include "IFSDirectory.hpp"
 #include "ByteBuffer.hpp"
+#include "Atlas.hpp"
 #include "IFSDirectoryTexture.hpp"
 
 namespace IFS
@@ -26,17 +27,15 @@ namespace IFS
             Document(std::string path);
             ~Document();
 
+            // calls GetAtlas() on this documents tex directory, if any
+            // see: IFS::DirectoryTexture::GetAtlas(std::string); for details
+            // returns nullptr if no tex directory is present in this document
+            Atlas *GetAtlas(std::string name);
+
             // get the root directory of this document
             Directory *GetRoot()
             {
                 return root;
-            }
-
-            // get the texture directory of this document, if any
-            // returns nullptr if none is found
-            DirectoryTexture *GetTextureDirectory()
-            {
-                return (DirectoryTexture *)GetRoot()->GetEntry("tex");
             }
     };
 };
