@@ -69,18 +69,13 @@ void Atlas::AddImage(std::string name,
     AddImage(name, x, y, width, height, x, y, width, height, data);
 }
 
-void Atlas::GetImageSize(std::string name,
-                         unsigned int *width,
-                         unsigned int *height)
+AtlasImage *Atlas::GetImage(std::string name)
 {
-    // return early if the given uv name is not in this atlas
+    // return nullptr if no image with the given name is in this atlas
     if (images.find(name) == images.end())
-        return;
+        return nullptr;
 
-    // write the width/height to the given pointers
-    AtlasImage i = images[name];
-    *width = i.Width;
-    *height = i.Height;
+    return &images[name];
 }
 
 void Atlas::SetBufferData(UVBuffer *buffer,

@@ -27,9 +27,9 @@ void Sprite::SetImage(Atlas *atlas, std::string name)
     atlas->SetBufferData(uv_buffer, 0, name);
 
     // set this sprites size to match the images size
-    unsigned int width, height;
-    atlas->GetImageSize(name, &width, &height);
-    this->SetSize(Vector3(width, height, 1));
+    AtlasImage *image = atlas->GetImage(name);
+    if (image != nullptr)
+        this->SetSize(Vector3(image->Width, image->Height, 1));
 
     // store the atlas to bind when drawing
     this->atlas = atlas;
