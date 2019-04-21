@@ -4,7 +4,7 @@
 #include <GLES2/gl2.h>
 #include <GLES2/gl2ext.h>
 
-#include "IFSImage.hpp"
+#include "IFSImageLoader.hpp"
 
 IFS::Texture::Texture(IFS::Directory *directory,
                       KML::Node *node,
@@ -33,10 +33,8 @@ IFS::Texture::Texture(IFS::Directory *directory,
         if (file == nullptr)
             continue;
 
-        // create the image, add it to the atlas, and delete it
-        IFS::Image *image = new IFS::Image(i, file, compression, format);
-        image->AddToAtlas(atlas);
-        delete image;
+        // load the image into the atlas
+        IFS::ImageLoader::Load(i, file, compression, format, atlas);
     }
 }
 
