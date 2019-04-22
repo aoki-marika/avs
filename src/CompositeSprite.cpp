@@ -4,7 +4,7 @@
 #include "VertexConstants.hpp"
 
 CompositeSprite::CompositeSprite(unsigned int max_sprites,
-                                 BufferUsage usage) : Drawable(ShaderSource::SPRITE_FRAGMENT)
+                                 BufferUsage usage) : Drawable(ShaderSource::SPRITE_FRAGMENT), max_sprites(max_sprites)
 {
     attrib_vertex_position = GetProgram()->GetAttribute("vertexPosition");
     attrib_vertex_uv = GetProgram()->GetAttribute("vertexUV");
@@ -35,7 +35,18 @@ void CompositeSprite::SetAtlas(Atlas *atlas)
     this->atlas = atlas;
 }
 
+void CompositeSprite::DrawSprites(unsigned int num_sprites, Camera *camera)
+{
+    Drawable::Draw(camera);
+    DrawSprites(num_sprites);
+}
+
 void CompositeSprite::DrawVertices()
+{
+    DrawSprites(max_sprites);
+}
+
+void CompositeSprite::DrawSprites(unsigned int num_sprites)
 {
     // dont bother drawing if no atlas was set
     if (atlas == nullptr)
@@ -45,7 +56,7 @@ void CompositeSprite::DrawVertices()
     atlas->Bind();
     vertex_buffer->BindAttribute(attrib_vertex_position);
     uv_buffer->BindAttribute(attrib_vertex_uv);
-    vertex_buffer->DrawAll();
+    vertex_buffer->Draw(num_sprites * VertexConstants::QUAD_VERTICES);
     uv_buffer->UnbindAttribute(attrib_vertex_uv);
     vertex_buffer->UnbindAttribute(attrib_vertex_position);
     atlas->Unbind();

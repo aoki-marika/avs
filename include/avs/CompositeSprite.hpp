@@ -6,11 +6,16 @@
 #include "Atlas.hpp"
 #include "VertexConstants.hpp"
 
+// a drawable that draws multiple textures with a single draw call
+// note: Draw() draws all sprites, DrawSprites() draws max_sprites sprites
 class CompositeSprite : public Drawable
 {
     private:
         int attrib_vertex_position, attrib_vertex_uv;
         int uniform_sampler;
+
+        // the maximum number of sprites in this composite sprite
+        unsigned int max_sprites;
 
         // the buffer for the vertices/uvs of this composite sprite
         VertexBuffer *vertex_buffer;
@@ -21,6 +26,9 @@ class CompositeSprite : public Drawable
 
     protected:
         virtual void DrawVertices();
+
+        // bind and draw the given number of sprites from this composite sprite
+        void DrawSprites(unsigned int num_sprites);
 
     public:
         // a sprite in a composite sprite
@@ -64,6 +72,8 @@ class CompositeSprite : public Drawable
             // add each sprites vertices/uvs to the respective buffers
             for (int i = 0; i < size; i++)
             {
+                unsigned int v = i * VertexConstants::QUAD_VERTICES;
+
                 // get the current sprite
                 Sprite *sprite = &(*sprites)[i];
 
@@ -75,14 +85,17 @@ class CompositeSprite : public Drawable
                 // pass the vertices to the vertex buffer
                 float sx = sprite->X, ex = sprite->X + image->Width;
                 float sy = sprite->Y, ey = sprite->Y + image->Height;
-                vertex_buffer->SetQuad(i * VertexConstants::QUAD_VERTICES,
+                vertex_buffer->SetQuad(v,
                                        Vector3(sx, sy, 0),
                                        Vector3(sx, ey, 0),
                                        Vector3(ex, ey, 0),
                                        Vector3(ex, sy, 0));
 
                 // pass the uvs to the uv buffer
-                atlas->SetBufferData(uv_buffer, i * VertexConstants::QUAD_VERTICES, sprite->Image);
+                atlas->SetBufferData(uv_buffer, v, sprite->Image);
             }
         }
+
+        // draw the given number of sprites from this composite sprite with the given camera
+        void DrawSprites(unsigned int num_sprites, Camera *camera);
 };
