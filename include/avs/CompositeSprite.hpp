@@ -9,8 +9,8 @@
 class CompositeSprite : public Drawable
 {
     private:
-        unsigned int attrib_vertex_position, attrib_vertex_uv;
-        unsigned int uniform_sampler;
+        int attrib_vertex_position, attrib_vertex_uv;
+        int uniform_sampler;
 
         // the buffer for the vertices/uvs of this composite sprite
         VertexBuffer *vertex_buffer;

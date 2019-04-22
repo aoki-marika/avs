@@ -5,9 +5,6 @@
 
 int main()
 {
-    // todo: update to reflect new bottom-left origin
-    // add note about how its to keep vertices consistent between 2d and 3d
-    // also probably update Camera2D ctor to take near/far values
     Camera2D *camera;
     Matrix4 expected;
 

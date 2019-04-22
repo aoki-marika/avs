@@ -8,8 +8,8 @@
 class Box : public Drawable
 {
     private:
-        unsigned int attrib_vertex_position;
-        unsigned int uniform_colour;
+        int attrib_vertex_position;
+        int uniform_colour;
 
         // the buffer for the vertices of this box
         VertexBuffer *vertex_buffer;

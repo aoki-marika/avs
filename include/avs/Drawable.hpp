@@ -23,8 +23,7 @@ enum class BlendMode
 class Drawable
 {
     private:
-        // todo: locations are actually signed ints
-        unsigned int uniform_pv, uniform_size, uniform_position, uniform_alpha;
+        int uniform_pv, uniform_size, uniform_position, uniform_alpha;
 
         // the program of this drawable
         Program *program;

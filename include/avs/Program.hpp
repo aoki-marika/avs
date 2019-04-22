@@ -14,18 +14,18 @@ class Program
         Program(const Shader *vertex, const Shader *fragment);
         ~Program();
 
-        // get the id of the uniform/attribute by the given name from this program
-        unsigned int GetUniform(std::string name);
-        unsigned int GetAttribute(std::string name);
+        // get the id of the attribute/uniform by the given name from this program
+        int GetAttribute(std::string name);
+        int GetUniform(std::string name);
 
-        // use this program for drawing vertices/fragments
+        // use this program for drawing vertices/fragments or assigning attributes/uniforms
         void Use();
 
         // set uniform values to various data types
-        // Use must be called before uniforms can be set
-        void UniformFloat(unsigned int uniform, float value);
-        void UniformVector3(unsigned int uniform, Vector3 value);
-        void UniformColour4(unsigned int uniform, Colour4 value);
-        void UniformMatrix4(unsigned int uniform, Matrix4 value);
-        void UniformAtlas(unsigned int uniform, Atlas *atlas);
+        // Use() must be called before uniforms can be set
+        void UniformFloat(int uniform, float value);
+        void UniformVector3(int uniform, Vector3 value);
+        void UniformColour4(int uniform, Colour4 value);
+        void UniformMatrix4(int uniform, Matrix4 value);
+        void UniformAtlas(int uniform, Atlas *atlas);
 };
