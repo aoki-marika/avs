@@ -27,14 +27,14 @@ Buffer::~Buffer()
     glDeleteBuffers(1, &id);
 }
 
-void Buffer::BindAttribute(unsigned int attribute)
+void Buffer::BindAttribute(int attribute)
 {
     glEnableVertexAttribArray(attribute);
     glBindBuffer(GL_ARRAY_BUFFER, id);
     glVertexAttribPointer(attribute, num_value_components, GL_FLOAT, GL_FALSE, 0, NULL);
 }
 
-void Buffer::UnbindAttribute(unsigned int attribute)
+void Buffer::UnbindAttribute(int attribute)
 {
     glDisableVertexAttribArray(attribute);
 }

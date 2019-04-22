@@ -2,14 +2,14 @@
 
 #include <math.h>
 
-Camera2D::Camera2D(float width, float height)
+Camera2D::Camera2D(float width, float height, float near, float far)
 {
     // create the orthographic projection matrix
     // width/height in size (to make units 1:1 to pixels) with 0,0 in the center
     // -x = left, x = right, -y = down, y = up
     float l = -width / 2, r = width / 2;
-    float b = height / 2, t = -height / 2;
-    float n = 1, f = 0;
+    float b = -height / 2, t = height / 2;
+    float n = near, f = far;
     float tx = -(r + l) / (r - l);
     float ty = -(t + b) / (t - b);
     float tz = -(f + n) / (f - n);
@@ -18,6 +18,6 @@ Camera2D::Camera2D(float width, float height)
                      0,           0,                  2 / (f - n), tz,
                      0,           0,                  0,           1);
 
-    // offset by half width/height to make 0,0 the bottom left of the window
+    // offset by half -width/-height to make 0,0 the top left of the window
     Matrix = Matrix * Matrix4::Translation(Vector3(-width / 2, -height / 2, 0));
 }

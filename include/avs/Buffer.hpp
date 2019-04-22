@@ -43,6 +43,6 @@ class Buffer
         // bind/unbind this buffer to the given vertex attribute
         // attribute should be the id of the attribute from Program::GetAttribute();
         // unbind should always be called after bind is called
-        void BindAttribute(unsigned int attribute);
-        void UnbindAttribute(unsigned int attribute);
+        void BindAttribute(int attribute);
+        void UnbindAttribute(int attribute);
 };

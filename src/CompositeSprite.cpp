@@ -1,47 +1,41 @@
-#include "Sprite.hpp"
+#include "CompositeSprite.hpp"
 
 #include "ShaderSource.hpp"
 #include "VertexConstants.hpp"
 
-Sprite::Sprite() : Drawable(ShaderSource::SPRITE_FRAGMENT)
+CompositeSprite::CompositeSprite(unsigned int max_sprites,
+                                 BufferUsage usage) : Drawable(ShaderSource::SPRITE_FRAGMENT)
 {
     attrib_vertex_position = GetProgram()->GetAttribute("vertexPosition");
     attrib_vertex_uv = GetProgram()->GetAttribute("vertexUV");
     uniform_sampler = GetProgram()->GetUniform("sampler");
 
     // create the vertex/uv buffers
-    vertex_buffer = VertexBuffer::Quad(Vector3(1, 1, 1),
-                                       Vector3(1, 2, 1),
-                                       Vector3(2, 2, 1),
-                                       Vector3(2, 1, 1));
-    uv_buffer = new UVBuffer(VertexConstants::QUAD_VERTICES, BufferUsage::Static);
+    unsigned int num_vertices = VertexConstants::QUAD_VERTICES * max_sprites;
+    vertex_buffer = new VertexBuffer(num_vertices, usage);
+    uv_buffer = new UVBuffer(num_vertices, usage);
+
+    // set the default size so sprite vertices arent affected
+    this->SetSize(Vector3(1, 1, 1));
 }
 
-Sprite::~Sprite()
+CompositeSprite::~CompositeSprite()
 {
     delete vertex_buffer;
     delete uv_buffer;
 }
 
-void Sprite::SetImage(Atlas *atlas, std::string name)
+void CompositeSprite::SetAtlas(Atlas *atlas)
 {
     // pass the texture to the shader
     GetProgram()->Use();
     GetProgram()->UniformAtlas(uniform_sampler, atlas);
 
-    // write the uv values to the uv buffer
-    atlas->SetBufferData(uv_buffer, 0, name);
-
-    // set this sprites size to match the images size
-    AtlasImage *image = atlas->GetImage(name);
-    if (image != nullptr)
-        this->SetSize(Vector3(image->Width, image->Height, 1));
-
     // store the atlas to bind when drawing
     this->atlas = atlas;
 }
 
-void Sprite::DrawVertices()
+void CompositeSprite::DrawVertices()
 {
     // dont bother drawing if no atlas was set
     if (atlas == nullptr)
