@@ -3,7 +3,6 @@
 #include "Camera.hpp"
 #include "Program.hpp"
 #include "Vector3.hpp"
-#include "VertexBuffer.hpp"
 
 enum class BlendMode
 {
@@ -12,15 +11,23 @@ enum class BlendMode
     Multiply,
 };
 
-// used as a base class, use Box for a functional implementation
+// used as a base class for anything that can be drawn on screen
+// note: when subclasses create a quad vertex buffer with below values
+// 1, 1, 1
+// 1, 2, 1
+// 2, 2, 1
+// 2, 1, 1
+// then it is intended to use the exact size and position passed to SetSize/SetPosition
+// these values are used so the size/position can just be multipliers to the vertex position
+// and the vertex buffer never has to be modified, which is nice as changing vertex buffer data is annoying
 class Drawable
 {
     private:
-        VertexBuffer *vertex_buffer;
-        Program *program;
-
-        unsigned int attrib_vertex_position;
+        // todo: locations are actually signed ints
         unsigned int uniform_pv, uniform_size, uniform_position, uniform_alpha;
+
+        // the program of this drawable
+        Program *program;
 
         // the current blend mode of this drawable
         BlendMode blend_mode;
@@ -32,19 +39,9 @@ class Drawable
             return program;
         }
 
-        // methods called before and after the vertices of this drawable are drawn
-        // Drawable implements these to bind the vertex position to the fragmemt shader
-        // so subclasses should call the base implementation when overriding
-        // this drawables program is used before these methods are called
-        virtual void BeginDraw();
-        virtual void EndDraw();
-
-        // the method called to draw the vertices of this drawable
-        // Drawable implements this to draw the default quad vertex buffer
-        // so subclasses should typically call the base implementation when overriding
-        // todo: Drawable needs to be a bit more generic and not have a VertexBuffer
-        // and have subclasses implement that instead
-        virtual void DrawVertices();
+        // the method called to draw the vertices of the drawable
+        // this drawables program is used and passed the pv matrix before this is called
+        virtual void DrawVertices() = 0;
 
     public:
         // create a new drawable with the given fragment shader source

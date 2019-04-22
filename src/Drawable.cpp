@@ -5,13 +5,6 @@
 
 Drawable::Drawable(std::string fragment_source)
 {
-    // drawables use a quad with position and size 1,1,1 then multiply by their actual position/size when drawing
-    // this allows the vertex buffer to never have to be modified, which is a tedious task
-    vertex_buffer = VertexBuffer::Quad(Vector3(1, 1, 1),
-                                       Vector3(1, 2, 1),
-                                       Vector3(2, 2, 1),
-                                       Vector3(2, 1, 1));
-
     // create the shaders and program
     Shader *vertex = new Shader(ShaderType::Vertex, ShaderSource::DRAWABLE_VERTEX);
     Shader *fragment = new Shader(ShaderType::Fragment, fragment_source);
@@ -21,8 +14,7 @@ Drawable::Drawable(std::string fragment_source)
     delete fragment;
     delete vertex;
 
-    // get attribute and uniform locations
-    attrib_vertex_position = program->GetAttribute("vertexPosition");
+    // get uniform locations
     uniform_pv = program->GetUniform("pv");
     uniform_size = program->GetUniform("size");
     uniform_position = program->GetUniform("position");
@@ -36,7 +28,6 @@ Drawable::Drawable(std::string fragment_source)
 Drawable::~Drawable()
 {
     delete program;
-    delete vertex_buffer;
 }
 
 void Drawable::SetSize(Vector3 size)
@@ -82,23 +73,6 @@ void Drawable::Draw(Camera *camera)
     program->Use();
     program->UniformMatrix4(uniform_pv, camera->GetMatrix());
 
-    // draw the quad from the vertex buffer
-    BeginDraw();
+    // draw the vertices
     DrawVertices();
-    EndDraw();
-}
-
-void Drawable::BeginDraw()
-{
-    vertex_buffer->BindAttribute(attrib_vertex_position);
-}
-
-void Drawable::EndDraw()
-{
-    vertex_buffer->UnbindAttribute(attrib_vertex_position);
-}
-
-void Drawable::DrawVertices()
-{
-    vertex_buffer->DrawAll();
 }

@@ -35,24 +35,18 @@ void CompositeSprite::SetAtlas(Atlas *atlas)
     this->atlas = atlas;
 }
 
-// note: CompositeSprite does not call any of the base Drawable draw methods as it draws its own vertices
-// todo: remove this note when Drawable removes its VertexBuffer
-
-void CompositeSprite::BeginDraw()
-{
-    if (atlas != nullptr) atlas->Bind();
-    vertex_buffer->BindAttribute(attrib_vertex_position);
-    uv_buffer->BindAttribute(attrib_vertex_uv);
-}
-
-void CompositeSprite::EndDraw()
-{
-    uv_buffer->UnbindAttribute(attrib_vertex_uv);
-    vertex_buffer->UnbindAttribute(attrib_vertex_position);
-    if (atlas != nullptr) atlas->Unbind();
-}
-
 void CompositeSprite::DrawVertices()
 {
+    // dont bother drawing if no atlas was set
+    if (atlas == nullptr)
+        return;
+
+    // bind, draw, and unbind the atlas/vertices/uvs
+    atlas->Bind();
+    vertex_buffer->BindAttribute(attrib_vertex_position);
+    uv_buffer->BindAttribute(attrib_vertex_uv);
     vertex_buffer->DrawAll();
+    uv_buffer->UnbindAttribute(attrib_vertex_uv);
+    vertex_buffer->UnbindAttribute(attrib_vertex_position);
+    atlas->Unbind();
 }

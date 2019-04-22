@@ -19,8 +19,6 @@ class CompositeSprite : public Drawable
         Atlas *atlas = nullptr;
 
     protected:
-        virtual void BeginDraw();
-        virtual void EndDraw();
         virtual void DrawVertices();
 
     public:

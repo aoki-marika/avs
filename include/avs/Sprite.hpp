@@ -1,24 +1,25 @@
 #pragma once
 
 #include "Drawable.hpp"
+#include "VertexBuffer.hpp"
 #include "UVBuffer.hpp"
 #include "Atlas.hpp"
 
 class Sprite : public Drawable
 {
     private:
-        unsigned int attrib_vertex_uv;
+        unsigned int attrib_vertex_position, attrib_vertex_uv;
         unsigned int uniform_sampler;
 
-        // the buffer for the uvs of this sprite
+        // the buffer for the vertices/uvs of this sprite
+        VertexBuffer *vertex_buffer;
         UVBuffer *uv_buffer;
 
         // the atlas this sprite is getting images from
         Atlas *atlas = nullptr;
 
     protected:
-        virtual void BeginDraw();
-        virtual void EndDraw();
+        virtual void DrawVertices();
 
     public:
         Sprite();

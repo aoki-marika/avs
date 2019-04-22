@@ -4,16 +4,22 @@
 
 Sprite::Sprite() : Drawable(ShaderSource::SPRITE_FRAGMENT)
 {
+    attrib_vertex_position = GetProgram()->GetAttribute("vertexPosition");
     attrib_vertex_uv = GetProgram()->GetAttribute("vertexUV");
     uniform_sampler = GetProgram()->GetUniform("sampler");
 
-    // create the uv buffer
-    // 6 uvs for 6 vertices on a quad
+    // create the vertex/uv buffers
+    // 6 uvs for 6 vertices on a quad (todo: add a public constant for vertices per quad)
+    vertex_buffer = VertexBuffer::Quad(Vector3(1, 1, 1),
+                                       Vector3(1, 2, 1),
+                                       Vector3(2, 2, 1),
+                                       Vector3(2, 1, 1));
     uv_buffer = new UVBuffer(6, BufferUsage::Static);
 }
 
 Sprite::~Sprite()
 {
+    delete vertex_buffer;
     delete uv_buffer;
 }
 
@@ -35,16 +41,18 @@ void Sprite::SetImage(Atlas *atlas, std::string name)
     this->atlas = atlas;
 }
 
-void Sprite::BeginDraw()
+void Sprite::DrawVertices()
 {
-    if (atlas != nullptr) atlas->Bind();
-    Drawable::BeginDraw();
-    uv_buffer->BindAttribute(attrib_vertex_uv);
-}
+    // dont bother drawing if no atlas was set
+    if (atlas == nullptr)
+        return;
 
-void Sprite::EndDraw()
-{
+    // bind, draw, and unbind the atlas/vertices/uvs
+    atlas->Bind();
+    vertex_buffer->BindAttribute(attrib_vertex_position);
+    uv_buffer->BindAttribute(attrib_vertex_uv);
+    vertex_buffer->DrawAll();
     uv_buffer->UnbindAttribute(attrib_vertex_uv);
-    Drawable::EndDraw();
-    if (atlas != nullptr) atlas->Unbind();
+    vertex_buffer->UnbindAttribute(attrib_vertex_position);
+    atlas->Unbind();
 }
