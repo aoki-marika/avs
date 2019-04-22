@@ -18,7 +18,7 @@ void VertexBuffer::SetQuad(unsigned int index,
                            Vector3 c,
                            Vector3 d)
 {
-    const std::array<Vector3, num_quad_vertices> vertices =
+    const std::array<Vector3, VertexConstants::QUAD_VERTICES> vertices =
     {
         a, b, d,
         b, c, d,

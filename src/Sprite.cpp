@@ -1,6 +1,7 @@
 #include "Sprite.hpp"
 
 #include "ShaderSource.hpp"
+#include "VertexConstants.hpp"
 
 Sprite::Sprite() : Drawable(ShaderSource::SPRITE_FRAGMENT)
 {
@@ -9,12 +10,11 @@ Sprite::Sprite() : Drawable(ShaderSource::SPRITE_FRAGMENT)
     uniform_sampler = GetProgram()->GetUniform("sampler");
 
     // create the vertex/uv buffers
-    // 6 uvs for 6 vertices on a quad (todo: add a public constant for vertices per quad)
     vertex_buffer = VertexBuffer::Quad(Vector3(1, 1, 1),
                                        Vector3(1, 2, 1),
                                        Vector3(2, 2, 1),
                                        Vector3(2, 1, 1));
-    uv_buffer = new UVBuffer(6, BufferUsage::Static);
+    uv_buffer = new UVBuffer(VertexConstants::QUAD_VERTICES, BufferUsage::Static);
 }
 
 Sprite::~Sprite()

@@ -4,15 +4,13 @@
 
 #include "Buffer.hpp"
 #include "Vector3.hpp"
+#include "VertexConstants.hpp"
 
 class VertexBuffer : public Buffer
 {
     private:
         // the number of components in a vertex (x, y, z)
         static const unsigned int num_vertex_components = 3;
-
-        // the number of vertices in a quad (2 triangles)
-        static const unsigned int num_quad_vertices = 2 * 3;
 
         // the number of vertices this buffer is allocated to hold
         unsigned int num_vertices;
@@ -50,7 +48,7 @@ class VertexBuffer : public Buffer
                                   Vector3 c,
                                   Vector3 d)
         {
-            VertexBuffer *buffer = new VertexBuffer(num_quad_vertices, BufferUsage::Static);
+            VertexBuffer *buffer = new VertexBuffer(VertexConstants::QUAD_VERTICES, BufferUsage::Static);
             buffer->SetQuad(0, a, b, c, d);
 
             return buffer;

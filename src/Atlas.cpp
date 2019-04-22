@@ -2,6 +2,8 @@
 
 #include <GLES2/gl2.h>
 
+#include "VertexConstants.hpp"
+
 Atlas::Atlas(unsigned int width,
              unsigned int height,
              GLenum format,
@@ -90,7 +92,7 @@ void Atlas::SetBufferData(UVBuffer *buffer,
     // note: these are mapped to the vertex layout of VertexBuffer::Quad
     // if that changes this will need to change too
     AtlasImage i = images[name];
-    const std::array<UV, 6> data =
+    const std::array<UV, VertexConstants::QUAD_VERTICES> data =
     {
         i.A, i.B, i.D,
         i.B, i.C, i.D,

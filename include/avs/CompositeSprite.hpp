@@ -4,6 +4,7 @@
 #include "VertexBuffer.hpp"
 #include "UVBuffer.hpp"
 #include "Atlas.hpp"
+#include "VertexConstants.hpp"
 
 class CompositeSprite : public Drawable
 {
@@ -74,14 +75,14 @@ class CompositeSprite : public Drawable
                 // pass the vertices to the vertex buffer
                 float sx = sprite->X, ex = sprite->X + image->Width;
                 float sy = sprite->Y, ey = sprite->Y + image->Height;
-                vertex_buffer->SetQuad(i * 6,
+                vertex_buffer->SetQuad(i * VertexConstants::QUAD_VERTICES,
                                        Vector3(sx, sy, 0),
                                        Vector3(sx, ey, 0),
                                        Vector3(ex, ey, 0),
                                        Vector3(ex, sy, 0));
 
                 // pass the uvs to the uv buffer
-                atlas->SetBufferData(uv_buffer, i * 6, sprite->Image);
+                atlas->SetBufferData(uv_buffer, i * VertexConstants::QUAD_VERTICES, sprite->Image);
             }
         }
 };

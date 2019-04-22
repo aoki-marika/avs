@@ -1,6 +1,7 @@
 #include "CompositeSprite.hpp"
 
 #include "ShaderSource.hpp"
+#include "VertexConstants.hpp"
 
 CompositeSprite::CompositeSprite(unsigned int max_sprites,
                                  BufferUsage usage) : Drawable(ShaderSource::SPRITE_FRAGMENT)
@@ -10,8 +11,7 @@ CompositeSprite::CompositeSprite(unsigned int max_sprites,
     uniform_sampler = GetProgram()->GetUniform("sampler");
 
     // create the vertex/uv buffers
-    // 6 uvs for 6 vertices on a quad
-    unsigned int num_vertices = 6 * max_sprites;
+    unsigned int num_vertices = VertexConstants::QUAD_VERTICES * max_sprites;
     vertex_buffer = new VertexBuffer(num_vertices, usage);
     uv_buffer = new UVBuffer(num_vertices, usage);
 
