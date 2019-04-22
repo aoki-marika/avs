@@ -84,7 +84,7 @@ void Drawable::Draw(Camera *camera)
 
     // draw the quad from the vertex buffer
     BeginDraw();
-    vertex_buffer->DrawAll();
+    DrawVertices();
     EndDraw();
 }
 
@@ -96,4 +96,9 @@ void Drawable::BeginDraw()
 void Drawable::EndDraw()
 {
     vertex_buffer->UnbindAttribute(attrib_vertex_position);
+}
+
+void Drawable::DrawVertices()
+{
+    vertex_buffer->DrawAll();
 }

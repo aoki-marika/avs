@@ -39,13 +39,22 @@ class Drawable
         virtual void BeginDraw();
         virtual void EndDraw();
 
+        // the method called to draw the vertices of this drawable
+        // Drawable implements this to draw the default quad vertex buffer
+        // so subclasses should typically call the base implementation when overriding
+        // todo: Drawable needs to be a bit more generic and not have a VertexBuffer
+        // and have subclasses implement that instead
+        virtual void DrawVertices();
+
     public:
+        // create a new drawable with the given fragment shader source
         // note: all drawable fragment shaders should have a float uniform called "alpha"
         // that should be used to multiply the output alpha
         Drawable(std::string fragment_source);
         ~Drawable();
 
         // set the draw size/position of this drawable to the given value
+        // defaults to 0,0,0
         // note: these values are used according to the conventions of the given camera when drawing
         void SetSize(Vector3 size);
         void SetPosition(Vector3 position);

@@ -14,7 +14,7 @@ class Sprite : public Drawable
         UVBuffer *uv_buffer;
 
         // the atlas this sprite is getting images from
-        Atlas *atlas;
+        Atlas *atlas = nullptr;
 
     protected:
         virtual void BeginDraw();

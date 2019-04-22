@@ -6,7 +6,7 @@
 
 using namespace IFS;
 
-// IFS [path/to/document.ifs] [texture name] [image name 1] [image name 2] ..
+// IFSTexture [path/to/document.ifs] [texture name] [image name 1] [image name 2] ..
 int main(int argc, char **argv)
 {
     // setup the window and camera
