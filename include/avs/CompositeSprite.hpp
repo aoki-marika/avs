@@ -1,5 +1,7 @@
 #pragma once
 
+#include <vector>
+
 #include "Drawable.hpp"
 #include "VertexBuffer.hpp"
 #include "UVBuffer.hpp"
@@ -62,39 +64,7 @@ class CompositeSprite : public Drawable
         void SetAtlas(Atlas *atlas);
 
         // set the sprites of this image to the given sprites
-        template<std::size_t size>
-        void SetSprites(std::array<Sprite, size> *sprites)
-        {
-            // return early if theres no atlas set, as nothing can be done
-            if (atlas == nullptr)
-                return;
-
-            // add each sprites vertices/uvs to the respective buffers
-            for (int i = 0; i < size; i++)
-            {
-                unsigned int v = i * VertexConstants::QUAD_VERTICES;
-
-                // get the current sprite
-                Sprite *sprite = &(*sprites)[i];
-
-                // get the image for the current sprite
-                AtlasImage *image = atlas->GetImage(sprite->Image);
-                if (image == nullptr)
-                    continue;
-
-                // pass the vertices to the vertex buffer
-                float sx = sprite->X, ex = sprite->X + image->Width;
-                float sy = sprite->Y, ey = sprite->Y + image->Height;
-                vertex_buffer->SetQuad(v,
-                                       Vector3(sx, sy, 0),
-                                       Vector3(sx, ey, 0),
-                                       Vector3(ex, ey, 0),
-                                       Vector3(ex, sy, 0));
-
-                // pass the uvs to the uv buffer
-                atlas->SetBufferData(uv_buffer, v, sprite->Image);
-            }
-        }
+        void SetSprites(std::vector<Sprite> *sprites);
 
         // draw the given number of sprites from this composite sprite with the given camera
         void DrawSprites(unsigned int num_sprites, Camera *camera);
