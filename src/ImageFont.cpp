@@ -4,7 +4,7 @@ ImageFont::ImageFont(Atlas *atlas, float spacing) : atlas(atlas), spacing(spacin
 {
 }
 
-void ImageFont::SetCharacter(char character, std::string image)
+void ImageFont::SetCharacter(char32_t character, std::string image)
 {
     // ensure the given name is in this image fonts atlas
     if (atlas->GetImage(image) == nullptr)
@@ -14,7 +14,7 @@ void ImageFont::SetCharacter(char character, std::string image)
     images[character] = image;
 }
 
-std::string *ImageFont::GetImage(char character)
+std::string *ImageFont::GetImage(char32_t character)
 {
     // return nullptr if the given character is not mapped
     if (images.find(character) == images.end())

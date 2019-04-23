@@ -1,5 +1,8 @@
 #include "Text.hpp"
 
+#include <locale>
+#include <codecvt>
+
 Text::Text(unsigned int max_length,
            BufferUsage usage) : CompositeSprite(max_length, usage), max_length(max_length)
 {
@@ -27,10 +30,14 @@ void Text::SetString(std::string string)
     // the array of sprites for the characters of the given string
     std::vector<CompositeSprite::Sprite> sprites(max_length);
 
+    // convert the given string to utf32 for extended characters (mainly japanese)
+    std::wstring_convert<std::codecvt_utf8<char32_t>, char32_t> converter;
+    std::u32string string_u32 = converter.from_bytes(string.data());
+
     // add sprites for each character in the given string
     int n = 0; //current sprite index
     float x = 0; //current character x position
-    for (auto c: string)
+    for (auto c: string_u32)
     {
         // get the name of this characters image
         std::string *name = font->GetImage(c);

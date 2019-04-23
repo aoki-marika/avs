@@ -15,7 +15,7 @@ class ImageFont : public Font
         float spacing;
 
         // the map of characters to images in this image fonts atlas
-        std::map<char, std::string> images;
+        std::map<char32_t, std::string> images;
 
     public:
         // create a new image font with the given atlas and character spacing
@@ -24,16 +24,16 @@ class ImageFont : public Font
         ImageFont(Atlas *atlas, float spacing);
 
         // map the given character to the given image name in this fonts atlas
-        void SetCharacter(char character, std::string image);
+        void SetCharacter(char32_t character, std::string image);
 
-        std::string *GetImage(char character);
+        std::string *GetImage(char32_t character);
 
         Atlas *GetAtlas()
         {
             return atlas;
         }
 
-        float GetSpacing(char character)
+        float GetSpacing(char32_t character)
         {
             return spacing;
         }
