@@ -35,35 +35,38 @@ void Text::SetString(std::string string)
     std::u32string string_u32 = converter.from_bytes(string.data());
 
     // add sprites for each character in the given string
-    int n = 0; //current sprite index
-    float x = 0; //current character x position
+    int i = 0; //current sprite index
+    Vector2 p; //current glyph position
     for (auto c: string_u32)
     {
-        // get the name of this characters image
-        std::string *name = font->GetImage(c);
-        if (name == nullptr)
+        // get the current characters glyph
+        Font::Glyph *glyph = font->GetGlyph(c);
+        if (glyph == nullptr)
             continue;
 
-        // get this characters image
-        AtlasImage *image = font->GetAtlas()->GetImage(*name);
+        // get the current glyphs image
+        AtlasImage *image = font->GetAtlas()->GetImage(glyph->Image);
         if (image == nullptr)
             continue;
 
-        // add the sprite for this character
-        sprites[n] = CompositeSprite::Sprite(x, 0, *name);
+        // add the sprite for this glyph
+        sprites[i] = CompositeSprite::Sprite(p.X + glyph->Bearing.X,
+                                             p.Y - (image->Height - glyph->Bearing.Y),
+                                             glyph->Image);
 
-        // increment the position and index for the next character sprite
-        x += image->Width + font->GetSpacing(c);
-        n++;
+        // increment the position and index for the next glyph
+        p.X += glyph->Advance.X;
+        p.Y += glyph->Advance.Y;
+        i++;
 
-        // break if the string is exceeding the maximum length as no more character sprites can be added
-        if (n >= max_length)
+        // break if the string is exceeding the maximum length as no more glyphs can be added
+        if (i >= max_length)
             break;
     }
 
     // store the string values
     this->string = string;
-    this->string_draw_length = n;
+    this->string_draw_length = i;
 
     // write the sprites to the composite sprite
     this->SetSprites(&sprites);
