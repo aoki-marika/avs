@@ -7,9 +7,14 @@ VertexBuffer::VertexBuffer(unsigned int num_vertices,
 {
 }
 
-void VertexBuffer::DrawAll()
+void VertexBuffer::Draw(unsigned int num_vertices)
 {
     glDrawArrays(GL_TRIANGLES, 0, num_vertices);
+}
+
+void VertexBuffer::DrawAll()
+{
+    this->Draw(num_vertices);
 }
 
 void VertexBuffer::SetQuad(unsigned int index,

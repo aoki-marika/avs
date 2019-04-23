@@ -63,7 +63,10 @@ class VertexBuffer : public Buffer
                      Vector3 c,
                      Vector3 d);
 
-        // draw all the vertices in this buffer
-        // should call BindAttribute() first to bind vertices to the vertex shader
+        // draw the given amount of vertices from this buffer as triangles
+        // should call BindAttribute() first to bind vertices to a vertex shader
+        void Draw(unsigned int num_vertices);
+
+        // call Draw() with the maximum number of vertices in this buffer
         void DrawAll();
 };

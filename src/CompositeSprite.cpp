@@ -4,7 +4,7 @@
 #include "VertexConstants.hpp"
 
 CompositeSprite::CompositeSprite(unsigned int max_sprites,
-                                 BufferUsage usage) : Drawable(ShaderSource::SPRITE_FRAGMENT)
+                                 BufferUsage usage) : Drawable(ShaderSource::SPRITE_FRAGMENT), max_sprites(max_sprites)
 {
     attrib_vertex_position = GetProgram()->GetAttribute("vertexPosition");
     attrib_vertex_uv = GetProgram()->GetAttribute("vertexUV");
@@ -35,7 +35,52 @@ void CompositeSprite::SetAtlas(Atlas *atlas)
     this->atlas = atlas;
 }
 
+void CompositeSprite::SetSprites(std::vector<Sprite> *sprites)
+{
+    // return early if theres no atlas set, as nothing can be done
+    if (atlas == nullptr)
+        return;
+
+    // add each sprites vertices/uvs to the respective buffers
+    for (int i = 0; i < sprites->size(); i++)
+    {
+        unsigned int v = i * VertexConstants::QUAD_VERTICES;
+
+        // get the current sprite
+        Sprite *sprite = &(*sprites)[i];
+
+        // get the image for the current sprite
+        AtlasImage *image = atlas->GetImage(sprite->Image);
+        if (image == nullptr)
+            continue;
+
+        // pass the vertices to the vertex buffer
+        float sx = sprite->X, ex = sprite->X + image->Width;
+        float sy = sprite->Y, ey = sprite->Y + image->Height;
+        vertex_buffer->SetQuad(v,
+                               Vector3(sx, sy, 0),
+                               Vector3(sx, ey, 0),
+                               Vector3(ex, ey, 0),
+                               Vector3(ex, sy, 0));
+
+        // pass the uvs to the uv buffer
+        atlas->SetBufferData(uv_buffer, v, sprite->Image);
+    }
+}
+
+
+void CompositeSprite::DrawSprites(unsigned int num_sprites, Camera *camera)
+{
+    Drawable::Draw(camera);
+    DrawSprites(num_sprites);
+}
+
 void CompositeSprite::DrawVertices()
+{
+    DrawSprites(max_sprites);
+}
+
+void CompositeSprite::DrawSprites(unsigned int num_sprites)
 {
     // dont bother drawing if no atlas was set
     if (atlas == nullptr)
@@ -45,7 +90,7 @@ void CompositeSprite::DrawVertices()
     atlas->Bind();
     vertex_buffer->BindAttribute(attrib_vertex_position);
     uv_buffer->BindAttribute(attrib_vertex_uv);
-    vertex_buffer->DrawAll();
+    vertex_buffer->Draw(num_sprites * VertexConstants::QUAD_VERTICES);
     uv_buffer->UnbindAttribute(attrib_vertex_uv);
     vertex_buffer->UnbindAttribute(attrib_vertex_position);
     atlas->Unbind();

@@ -12,7 +12,7 @@ int main(int argc, char **argv)
 {
     // setup the window and camera
     float width = 1280, height = 720;
-    const int num_max_sprites = 100;
+    const unsigned int num_max_sprites = 100;
     Window *window = new Window("CompositeSprite", width, height);
     Camera2D *camera = new Camera2D(width, height, -100, 100);
 
@@ -23,7 +23,7 @@ int main(int argc, char **argv)
     sprite->SetAtlas(atlas);
 
     // create a sine wave of the given images
-    std::array<CompositeSprite::Sprite, num_max_sprites> sprites;
+    std::vector<CompositeSprite::Sprite> sprites(num_max_sprites);
     unsigned int size = 100;
     for (int i = 0; i < argc - 3 && i < num_max_sprites; i++)
     {
