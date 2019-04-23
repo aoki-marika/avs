@@ -12,7 +12,7 @@ int main(int argc, char **argv)
 {
     // setup the window and camera
     float width = 1280, height = 720;
-    const std::size_t num_max_sprites = 100;
+    const unsigned int num_max_sprites = 100;
     Window *window = new Window("CompositeSprite", width, height);
     Camera2D *camera = new Camera2D(width, height, -100, 100);
 

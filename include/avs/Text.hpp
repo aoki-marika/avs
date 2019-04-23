@@ -30,7 +30,7 @@ class Text : public CompositeSprite
         Text(unsigned int max_length, BufferUsage usage);
 
         // set the font for this text to draw with
-        // automatically redraws the string this text is displaying with the given font
+        // automatically re-sets the string this text is displaying with the given font
         void SetFont(Font *font);
 
         // set the string for this text to display
