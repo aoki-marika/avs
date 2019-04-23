@@ -21,7 +21,7 @@ int main(int argc, char **argv)
     Document *document = new Document(std::string(argv[1]));
     ImageFont *font = new ImageFont(document->GetAtlas(std::string(argv[2])), atof(argv[3]));
     for (int i = 4; i < argc; i += 2)
-        font->SetCharacter(argv[i][0], std::string(argv[i + 1]));
+        font->SetGlyph(argv[i][0], std::string(argv[i + 1]));
 
     // setup the text
     Text *text = new Text(max_length, BufferUsage::Dynamic);
