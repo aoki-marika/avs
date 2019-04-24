@@ -9,14 +9,17 @@ CompositeSprite::CompositeSprite(unsigned int max_sprites,
     attrib_vertex_position = GetProgram()->GetAttribute("vertexPosition");
     attrib_vertex_uv = GetProgram()->GetAttribute("vertexUV");
     uniform_sampler = GetProgram()->GetUniform("sampler");
+    uniform_colour = GetProgram()->GetUniform("colour");
 
     // create the vertex/uv buffers
     unsigned int num_vertices = VertexConstants::QUAD_VERTICES * max_sprites;
     vertex_buffer = new VertexBuffer(num_vertices, usage);
     uv_buffer = new UVBuffer(num_vertices, usage);
 
-    // set the default size so sprite vertices arent affected
+    // set defaults
+    // set size so sprite vertices arent multiplied by 0 by default
     this->SetSize(Vector3(1, 1, 1));
+    this->SetColour(Colour4::White());
 }
 
 CompositeSprite::~CompositeSprite()
@@ -68,6 +71,11 @@ void CompositeSprite::SetSprites(std::vector<Sprite> *sprites)
     }
 }
 
+void CompositeSprite::SetColour(Colour4 colour)
+{
+    GetProgram()->Use();
+    GetProgram()->UniformColour4(uniform_colour, colour);
+}
 
 void CompositeSprite::DrawSprites(unsigned int num_sprites, Camera *camera)
 {

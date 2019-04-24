@@ -8,6 +8,7 @@ Sprite::Sprite() : Drawable(ShaderSource::SPRITE_FRAGMENT)
     attrib_vertex_position = GetProgram()->GetAttribute("vertexPosition");
     attrib_vertex_uv = GetProgram()->GetAttribute("vertexUV");
     uniform_sampler = GetProgram()->GetUniform("sampler");
+    uniform_colour = GetProgram()->GetUniform("colour");
 
     // create the vertex/uv buffers
     vertex_buffer = VertexBuffer::Quad(Vector3(1, 1, 1),
@@ -15,6 +16,9 @@ Sprite::Sprite() : Drawable(ShaderSource::SPRITE_FRAGMENT)
                                        Vector3(2, 2, 1),
                                        Vector3(2, 1, 1));
     uv_buffer = new UVBuffer(VertexConstants::QUAD_VERTICES, BufferUsage::Static);
+
+    // apply defaults
+    SetColour(Colour4::White());
 }
 
 Sprite::~Sprite()
@@ -39,6 +43,12 @@ void Sprite::SetImage(Atlas *atlas, std::string name)
 
     // store the atlas to bind when drawing
     this->atlas = atlas;
+}
+
+void Sprite::SetColour(Colour4 colour)
+{
+    GetProgram()->Use();
+    GetProgram()->UniformColour4(uniform_colour, colour);
 }
 
 void Sprite::DrawVertices()
