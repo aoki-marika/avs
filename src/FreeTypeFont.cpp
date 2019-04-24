@@ -24,8 +24,25 @@ FreeTypeFont::FreeTypeFont(std::string path,
         throw new std::runtime_error(message);
     }
 
+    // select the unicode charmap
+    error = FT_Select_Charmap(face, FT_ENCODING_UNICODE);
+    if (error != FT_Err_Ok)
+    {
+        const char *format = "Error selecting Unicode charmap from font at \"%s\" (0x%02x)";
+        char message[strlen(format) + path.size()];
+        sprintf(message, format, path.c_str(), error);
+        throw new std::runtime_error(message);
+    }
+
     // set the faces height to the given height
-    FT_Set_Pixel_Sizes(face, 0, character_height);
+    error = FT_Set_Pixel_Sizes(face, 0, character_height);
+    if (error != FT_Err_Ok)
+    {
+        const char *format = "Error setting character height of %ld from font at \"%s\" (0x%02x)";
+        char message[strlen(format) + path.size()];
+        sprintf(message, format, character_height, path.c_str(), error);
+        throw new std::runtime_error(message);
+    }
 
     // get the width of the glyph atlas
     // try to find the smallest square that can hold every glyph if each glyph was square
