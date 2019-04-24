@@ -1,6 +1,6 @@
 CXX=g++
-CXX_FLAGS=-Iinclude/avs -Ibin -Wno-psabi
-LD_FLAGS=-licuuc -lcrypto
+CXX_FLAGS=-Iinclude/avs -Ibin -I/usr/include/freetype2 -Wno-psabi
+LD_FLAGS=-licuuc -lcrypto -lfreetype
 MKDIR=mkdir
 RM_R=rm -r
 SHD_INC=utils/shader_header.sh

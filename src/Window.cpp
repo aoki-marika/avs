@@ -9,6 +9,8 @@ namespace EGL
     #include <EGL/egl.h>
 };
 
+#include "FreeType.hpp"
+
 void Window::ClearBuffers()
 {
     glClear(GL_COLOR_BUFFER_BIT);
@@ -78,10 +80,15 @@ void Window::CreateContext()
     // setup gles
     glEnable(GL_BLEND);
     glClearColor(0, 0, 0, 1);
+    glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+
+    // setup freetype
+    FreeType::Init();
 }
 
 void Window::DeleteContext()
 {
+    FreeType::Deinit();
     EGL::eglDestroySurface(egl_display, egl_surface);
     EGL::eglDestroyContext(egl_display, egl_context);
     EGL::eglTerminate(egl_display);
