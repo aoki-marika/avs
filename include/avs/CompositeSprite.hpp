@@ -6,7 +6,7 @@
 #include "VertexBuffer.hpp"
 #include "UVBuffer.hpp"
 #include "Atlas.hpp"
-#include "VertexConstants.hpp"
+#include "Colour4.hpp"
 
 // a drawable that draws multiple textures with a single draw call
 // note: Draw() draws all sprites, DrawSprites() draws max_sprites sprites
@@ -14,7 +14,7 @@ class CompositeSprite : public Drawable
 {
     private:
         int attrib_vertex_position, attrib_vertex_uv;
-        int uniform_sampler;
+        int uniform_sampler, uniform_colour;
 
         // the maximum number of sprites in this composite sprite
         unsigned int max_sprites;
@@ -65,6 +65,11 @@ class CompositeSprite : public Drawable
 
         // set the sprites of this image to the given sprites
         void SetSprites(std::vector<Sprite> *sprites);
+
+        // set the colour of this composite sprite to the given colour
+        // this colour is used to multiply this composite sprites sprites image colours
+        // defaults to white
+        void SetColour(Colour4 colour);
 
         // draw the given number of sprites from this composite sprite with the given camera
         void DrawSprites(unsigned int num_sprites, Camera *camera);
