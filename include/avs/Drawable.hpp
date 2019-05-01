@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Transformable.hpp"
 #include "Camera.hpp"
 #include "Program.hpp"
 #include "Vector3.hpp"
@@ -20,7 +21,7 @@ enum class BlendMode
 // then it is intended to use the exact size and position passed to SetSize/SetPosition
 // these values are used so the size/position can just be multipliers to the vertex position
 // and the vertex buffer never has to be modified, which is nice as changing vertex buffer data is annoying
-class Drawable
+class Drawable : public Transformable
 {
     private:
         int uniform_pv, uniform_size, uniform_position, uniform_alpha;
@@ -28,7 +29,10 @@ class Drawable
         // the program of this drawable
         Program *program;
 
-        // the current blend mode of this drawable
+        // the current state of this drawable
+        Vector3 size;
+        Vector3 position;
+        float alpha;
         BlendMode blend_mode;
 
     protected:
@@ -62,6 +66,19 @@ class Drawable
         // set the alpha blend mode of this drawable to the given mode
         // defaults to normal
         void SetBlendMode(BlendMode mode);
+
+        // transformable helper methods
+        void SizeTo(Vector3 size, double duration, Easing easing = Easing::None);
+        void SizeXTo(float x, double duration, Easing easing = Easing::None);
+        void SizeYTo(float y, double duration, Easing easing = Easing::None);
+        void SizeZTo(float z, double duration, Easing easing = Easing::None);
+
+        void PositionTo(Vector3 position, double duration, Easing easing = Easing::None);
+        void PositionXTo(float x, double duration, Easing easing = Easing::None);
+        void PositionYTo(float y, double duration, Easing easing = Easing::None);
+        void PositionZTo(float z, double duration, Easing easing = Easing::None);
+
+        void AlphaTo(float alpha, double duration, Easing easing = Easing::None);
 
         // draw this drawables current state using the given camera
         void Draw(Camera *camera);
