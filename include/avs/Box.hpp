@@ -14,6 +14,9 @@ class Box : public Drawable
         // the buffer for the vertices of this box
         VertexBuffer *vertex_buffer;
 
+        // the current state of this box
+        Colour4 colour;
+
     protected:
         virtual void DrawVertices();
 
@@ -24,4 +27,11 @@ class Box : public Drawable
         // set the draw colour of this box to the given colour
         // defaults to white
         void SetColour(Colour4 colour);
+
+        // transformable helper methods
+        void ColourTo(Colour4 colour, double duration, Easing easing = Easing::None);
+        void ColourRTo(float r, double duration, Easing easing = Easing::None);
+        void ColourGTo(float g, double duration, Easing easing = Easing::None);
+        void ColourBTo(float b, double duration, Easing easing = Easing::None);
+        void ColourATo(float a, double duration, Easing easing = Easing::None);
 };
