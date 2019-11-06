@@ -1,5 +1,13 @@
 # libavs (working title)
 
+A game engine based around working with private BEMANI file formats, namely IFS and binary XML.
+
+This is largely a learning project for C++, OpenGL, and working with BEMANI file formats. **It is not actively maintained and is provided as is.**
+
+Uses OpenGL with DispmanX on Raspberry Pi, and X11 on any other Linux distro. Optimised for performance on a Raspberry Pi 1B.
+
+<sub>Yes, it is named after the wrong framework.</sub>
+
 # Requirements
 
 - Universal
